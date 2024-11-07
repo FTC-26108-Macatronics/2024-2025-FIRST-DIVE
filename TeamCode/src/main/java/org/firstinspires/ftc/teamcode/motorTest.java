@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp
+@Autonomous
 public class motorTest extends OpMode {
     private DcMotor motor = null;
 
@@ -15,6 +15,6 @@ public class motorTest extends OpMode {
 
     @Override
     public void loop() {
-        motor.setPower(0.3);
+        motor.setPower(1.0);
     }
 }
