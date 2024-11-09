@@ -16,7 +16,6 @@ public class Hardware {
         callingOpMode = opmode;
     }
 
-
     public void init() {
         callingOpMode.telemetry.addData("Status", "Initialize");
         callingOpMode.telemetry.update();
@@ -44,5 +43,19 @@ public class Hardware {
 
     public void strafe(double pwr) {
         transverseDrive.setPower(pwr);
+    }
+
+    public void driveArcade(double drive, double turn) {
+        double leftPwr = drive + turn;
+        double rightPwr = drive - turn;
+
+        double max = Math.max(Math.abs(leftPwr), Math.abs(rightPwr));
+        if (max > 1.0)
+        {
+            leftPwr /= max;
+            rightPwr /= max;
+        }
+
+        setDrivePower(leftPwr, rightPwr);
     }
 }
