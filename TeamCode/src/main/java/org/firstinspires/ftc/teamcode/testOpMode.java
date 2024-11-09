@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.initialize.Hardware;
 
 @TeleOp
 public class testOpMode extends OpMode {
+
     @Override
     public void init() {
         init();
@@ -14,7 +15,9 @@ public class testOpMode extends OpMode {
 
     public void loop() {
         telemetry.addData("Status", "Running");
+
         Hardware hardware = new Hardware(this);
+
         double strafePwr;
         double leftPwr = -gamepad1.left_stick_y;
         double rightPwr = -gamepad1.right_stick_y;
@@ -29,6 +32,7 @@ public class testOpMode extends OpMode {
 
         hardware.strafe(strafePwr);
         hardware.setDrivePower(leftPwr, rightPwr);
+
         telemetry.addData("D-Pad left", gamepad1.dpad_left);
         telemetry.addData("D-Pad right", gamepad1.dpad_right);
         telemetry.addData("Left joystick y", gamepad1.left_stick_y);
