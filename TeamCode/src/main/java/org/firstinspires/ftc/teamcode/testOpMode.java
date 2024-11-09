@@ -10,22 +10,26 @@ public class testOpMode extends OpMode {
     @Override
     public void init() {
         init();
+        double strafePwr,
+                leftPwr,
+                rightPwr;
     }
 
     public void loop() {
         telemetry.addData("Status", "Running");
         Hardware hardware = new Hardware(this);
-        double strafePwr;
-        double leftPwr = -gamepad1.left_stick_y;
-        double rightPwr = -gamepad1.right_stick_y;
+        strafePwr;
+        leftPwr = -gamepad1.left_stick_y;
+        rightPwr = -gamepad1.right_stick_y;
 
-        if(gamepad1.dpad_left) {
+        if (gamepad1.dpad_left) {
             strafePwr = 0.5;
         }
-        else if(gamepad1.dpad_right) {
+        else if (gamepad1.dpad_right) {
             strafePwr = -0.5;
         }
-        else {strafePwr = 0;}
+        else {
+            strafePwr = 0;}
 
         hardware.strafe(strafePwr);
         hardware.setDrivePower(leftPwr, rightPwr);
