@@ -7,7 +7,8 @@ import org.firstinspires.ftc.teamcode.initialize.Hardware;
 public class testOpMode extends OpMode {
     @Override
     public void init() {
-        Hardware robot       = new Hardware(this);
+        Hardware hardware = new Hardware(this);
+        init();
     }
 
     public void loop() {
