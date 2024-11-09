@@ -1,38 +1,39 @@
 package org.firstinspires.ftc.teamcode.initialize;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.teamcode.testOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class Hardware {
 
-    private LinearOpMode initOpMode = null;
+    private OpMode callingOpMode = null;
 
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     private DcMotor transverseDrive = null;
 
-    public Hardware (testOpMode opmode) {
-        initOpMode = opmode;
+    public Hardware (OpMode opmode) {
+        callingOpMode = opmode;
     }
 
 
     public void init() {
-        initOpMode.telemetry.addData("Status", "Initialize");
+        callingOpMode.telemetry.addData("Status", "Initialize");
 
-        leftDrive = initOpMode.hardwareMap.get(DcMotor.class, "leftDrive");
-        rightDrive = initOpMode.hardwareMap.get(DcMotor.class, "rightDrive");
-        transverseDrive = initOpMode.hardwareMap.get(DcMotor.class, "transverseDrive");
+        leftDrive = callingOpMode.hardwareMap.get(DcMotor.class, "leftDrive");
+        rightDrive = callingOpMode.hardwareMap.get(DcMotor.class, "rightDrive");
+        transverseDrive = callingOpMode.hardwareMap.get(DcMotor.class, "transverseDrive");
 
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        transverseDrive.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        transverseDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        initOpMode.telemetry.addData("Status", "Standby");
-        initOpMode.telemetry.update();
+        callingOpMode.telemetry.addData("Status", "Standby");
+        callingOpMode.telemetry.update();
     }
 
     /**
