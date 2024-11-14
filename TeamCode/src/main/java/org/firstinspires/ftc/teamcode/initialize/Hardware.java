@@ -5,14 +5,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class Hardware {
-
     private OpMode callingOpMode = null;
-
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     private DcMotor transverseDrive = null;
 
-    public Hardware (OpMode opmode) {
+    public Hardware(OpMode opmode) {
         callingOpMode = opmode;
     }
 
@@ -48,10 +46,9 @@ public class Hardware {
     public void driveArcade(double drive, double turn) {
         double leftPwr = drive + turn;
         double rightPwr = drive - turn;
-
         double max = Math.max(Math.abs(leftPwr), Math.abs(rightPwr));
-        if (max > 1.0)
-        {
+
+        if (max > 1.0) {
             leftPwr /= max;
             rightPwr /= max;
         }
