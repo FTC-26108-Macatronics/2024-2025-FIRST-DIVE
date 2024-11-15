@@ -2,13 +2,14 @@ package org.firstinspires.ftc.teamcode.initialize;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class Hardware {
 
     protected OpMode callingOpMode;
 
-    protected DcMotor leftDrive,
+    protected DcMotorEx leftDrive,
                         rightDrive,
                         transverseDrive;
 
@@ -28,13 +29,17 @@ public class Hardware {
         callingOpMode.telemetry.addData("Status", "Initialize");
         callingOpMode.telemetry.update();
 
-        leftDrive = callingOpMode.hardwareMap.get(DcMotor.class, "leftDrive");
-        rightDrive = callingOpMode.hardwareMap.get(DcMotor.class, "rightDrive");
-        transverseDrive = callingOpMode.hardwareMap.get(DcMotor.class, "transverseDrive");
+        leftDrive = callingOpMode.hardwareMap.get(DcMotorEx.class, "leftDrive");
+        rightDrive = callingOpMode.hardwareMap.get(DcMotorEx.class, "rightDrive");
+        transverseDrive = callingOpMode.hardwareMap.get(DcMotorEx.class, "transverseDrive");
 
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
         transverseDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        transverseDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
