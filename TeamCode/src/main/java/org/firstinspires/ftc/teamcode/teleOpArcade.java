@@ -14,10 +14,9 @@ public class teleOpArcade extends OpMode {
     private Strafe m_strafe = new Strafe();
 
     private DriveArcade m_driveArcade = new DriveArcade();
-    
-    private double drive,
-                    turn,
-                    strafePwr;
+    double drive,
+            turn,
+            strafePwr;
 
     @Override
     public void init() {
