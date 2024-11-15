@@ -6,11 +6,19 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class Hardware {
 
-    private OpMode callingOpMode = null;
+    protected OpMode callingOpMode;
 
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
-    private DcMotor transverseDrive = null;
+    protected DcMotor leftDrive,
+                        rightDrive,
+                        transverseDrive;
+
+
+    public Hardware() {
+        callingOpMode = null;
+        leftDrive = null;
+        rightDrive = null;
+        transverseDrive = null;
+    }
 
     public Hardware (OpMode opmode) {
         callingOpMode = opmode;
@@ -36,26 +44,4 @@ public class Hardware {
         callingOpMode.telemetry.update();
     }
 
-    public void setDrivePower(double leftWheel, double rightWheel) {
-        leftDrive.setPower(leftWheel);
-        rightDrive.setPower(rightWheel);
-    }
-
-    public void strafe(double pwr) {
-        transverseDrive.setPower(pwr);
-    }
-
-    public void driveArcade(double drive, double turn) {
-        double leftPwr = drive + turn;
-        double rightPwr = drive - turn;
-
-        double max = Math.max(Math.abs(leftPwr), Math.abs(rightPwr));
-        if (max > 1.0)
-        {
-            leftPwr /= max;
-            rightPwr /= max;
-        }
-
-        setDrivePower(leftPwr, rightPwr);
-    }
 }
