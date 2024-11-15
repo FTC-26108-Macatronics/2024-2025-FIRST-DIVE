@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.strafeMultiplier;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.teleopCommands.drive.DriveArcade;
 import org.firstinspires.ftc.teamcode.commands.teleopCommands.drive.Strafe;
 import org.firstinspires.ftc.teamcode.initialize.Hardware;
-
+import org.firstinspires.ftc.teamcode.Constants;
 @TeleOp
 public class teleOpArcade extends OpMode {
     private Hardware hardware = new Hardware(this);
@@ -30,7 +32,7 @@ public class teleOpArcade extends OpMode {
         drive = -gamepad1.left_stick_y;
         turn = gamepad1.right_stick_x;
 
-        strafePwr = (gamepad1.dpad_left) ? (0.5) : (gamepad1.dpad_right) ? (-0.5) : (0);
+        strafePwr = (gamepad1.dpad_left) ? (strafeMultiplier) : (gamepad1.dpad_right) ? (-strafeMultiplier) : (0);
 
         m_strafe.strafe(strafePwr);
         m_driveArcade.driveArcade(drive, turn);
