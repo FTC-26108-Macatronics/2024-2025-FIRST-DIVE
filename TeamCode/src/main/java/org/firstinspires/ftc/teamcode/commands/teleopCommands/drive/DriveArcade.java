@@ -1,21 +1,14 @@
 package org.firstinspires.ftc.teamcode.commands.teleopCommands.drive;
 
-import org.firstinspires.ftc.teamcode.initialize.Hardware;
-import org.firstinspires.ftc.teamcode.commands.teleopCommands.drive.SetDrivePower;
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
-public class DriveArcade extends Hardware {
-
-    private SetDrivePower m_setDrivePower;
-
-    private double leftPwr,
-                    rightPwr,
-                    max;
+public class DriveArcade extends DriveSubsystem {
     public void driveArcade(double drive, double turn) {
-        m_setDrivePower = new SetDrivePower();
+        SetDrivePower m_setDrivePower = new SetDrivePower();
 
-        leftPwr = drive + turn;
-        rightPwr = drive - turn;
-        max = Math.max(Math.abs(leftPwr), Math.abs(rightPwr));
+        double leftPwr = drive + turn;
+        double rightPwr = drive - turn;
+        double max = Math.max(Math.abs(leftPwr), Math.abs(rightPwr));
 
         if (max > 1.0) {
             leftPwr /= max;
