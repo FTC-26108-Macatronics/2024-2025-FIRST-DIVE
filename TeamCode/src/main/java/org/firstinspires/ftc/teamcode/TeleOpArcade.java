@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.initialize.Hardware;
 @TeleOp
 public class TeleOpArcade extends OpMode {
     Hardware hardware = new Hardware(this);
-    double drive, turn, strafePwr, armAngle;
+    double drive, turn, strafePwr;
 
     @Override
     public void init() {
@@ -19,19 +19,12 @@ public class TeleOpArcade extends OpMode {
     public void loop() {
         telemetry.addData("Status", "Running");
 
-        // fixed inverted controlls
         drive = -gamepad1.left_stick_y;
         turn = gamepad1.right_stick_x;
-        strafePwr = -gamepad1.left_stick_x;
-        armAngle = gamepad1.right_trigger;
+        strafePwr = gamepad1.left_stick_x;
 
-        // i recommend moving drive methods to another file and not keeping them in hardware
         hardware.strafe(strafePwr);
         hardware.driveArcade(drive, turn);
-
-        // change as we go
-        hardware.armRotation(armAngle, 90);
-
 
         telemetry.addData("Left joystick x", gamepad1.left_stick_x);
         telemetry.addData("Left joystick y", gamepad1.left_stick_y);
@@ -39,7 +32,6 @@ public class TeleOpArcade extends OpMode {
         telemetry.addData("Drive", drive);
         telemetry.addData("Turn", turn);
         telemetry.addData("Strafe power", strafePwr);
-        telemetry.addData("arm angle", (armAngle*360+90));
         telemetry.update();
     }
 }
