@@ -13,13 +13,10 @@ public class Hardware {
     protected DcMotorEx leftDrive, rightDrive, transverseDrive, armHex;
 
 
+
     public Hardware() {
-        callingOpMode = null;
-        leftDrive = null;
-        rightDrive = null;
-        transverseDrive = null;
-        armHex = null;
     }
+
 
     public Hardware (OpMode opmode) {
         callingOpMode = opmode;
