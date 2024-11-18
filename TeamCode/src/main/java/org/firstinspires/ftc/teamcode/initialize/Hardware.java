@@ -35,20 +35,20 @@ public class Hardware {
         transverseDrive = callingOpMode.hardwareMap.get(DcMotorEx.class, "transverseDrive");
 
         armHex.setDirection(DcMotor.Direction.FORWARD);
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        rightDrive.setDirection(DcMotorEx.Direction.FORWARD);
         transverseDrive.setDirection(DcMotorSimple.Direction.FORWARD);
 
         armHex.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        transverseDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        transverseDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         armHex.setTargetPosition(300);
         armHex.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        transverseDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        transverseDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         callingOpMode.telemetry.addData("Status", "Standby");
         callingOpMode.telemetry.update();
