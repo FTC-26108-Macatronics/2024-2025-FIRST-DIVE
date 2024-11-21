@@ -23,7 +23,7 @@ public class DriveMethods extends Hardware {
     }
 
     public void strafe(double pwr) {
-        transverseDrive.setPower(pwr);
+        this.transverseDrive.setPower(pwr);
     }
 
     public void driveArcade(double drive, double turn) {
