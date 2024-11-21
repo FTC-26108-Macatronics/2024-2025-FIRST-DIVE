@@ -12,11 +12,8 @@ public class Hardware {
 
     protected DcMotorEx leftDrive, rightDrive, transverseDrive, armHex;
 
-
-
     public Hardware() {
     }
-
 
     public Hardware (OpMode opmode) {
         callingOpMode = opmode;

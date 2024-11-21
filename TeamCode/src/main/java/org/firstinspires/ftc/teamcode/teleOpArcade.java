@@ -5,19 +5,15 @@ import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.strafeMult
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.commands.teleopCommands.drive.DriveArcade;
-import org.firstinspires.ftc.teamcode.commands.teleopCommands.drive.Strafe;
-import org.firstinspires.ftc.teamcode.commands.teleopCommands.drive.motorControll;
+import org.firstinspires.ftc.teamcode.commands.teleopCommands.arm.ArmMethods;
+import org.firstinspires.ftc.teamcode.commands.teleopCommands.drive.DriveMethods;
 import org.firstinspires.ftc.teamcode.initialize.Hardware;
-import org.firstinspires.ftc.teamcode.Constants;
+
 @TeleOp
 public class teleOpArcade extends OpMode {
-    private Hardware hardware = new Hardware(this);
-
-    private final motorControll motorControll = new motorControll();
-    private Strafe m_strafe = new Strafe();
-
-    private DriveArcade m_driveArcade = new DriveArcade();
+    final private Hardware hardware = new Hardware(this);
+    final private DriveMethods m_driveMethods = new DriveMethods();
+    final private ArmMethods m_armMethods = new ArmMethods();
     double drive, turn, strafePwr;
 
     @Override
@@ -32,12 +28,11 @@ public class teleOpArcade extends OpMode {
         drive = -gamepad1.left_stick_y;
         turn = gamepad1.right_stick_x;
 
-
         strafePwr = (gamepad1.dpad_left) ? (strafeMultiplier) : (gamepad1.dpad_right) ? (-strafeMultiplier) : (0);
 
-        m_strafe.strafe(strafePwr);
-        m_driveArcade.driveArcade(drive, turn);
-        motorControll.armRotation(gamepad1.right_trigger, 90);
+        m_driveMethods.strafe(strafePwr);
+        m_driveMethods.driveArcade(drive, turn);
+        m_armMethods.armRotation(gamepad1.right_trigger, 90);
 
         telemetry.addData("D-Pad left", gamepad1.dpad_left);
         telemetry.addData("D-Pad right", gamepad1.dpad_right);
