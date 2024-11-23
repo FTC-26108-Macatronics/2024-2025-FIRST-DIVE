@@ -2,26 +2,27 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.initialize.Hardware;
 
 @Autonomous
-public class AutoOpMode extends LinearOpMode {
+public class AutoOpMode extends OpMode {
 
     Hardware hardware = new Hardware(this);
 
     @Override
-    public void runOpMode() throws InterruptedException {
-
+    public void init() {
         hardware.init();
-        waitForStart();
-        hardware.driveArcade(5, 0);
+    }
 
-        while (hardware.ENCODER_TARGET_POSITION >= hardware.getEncoderValues()) {
-            hardware.driveArcade(0.6, 0);
-            telemetry.addData("Encoder", hardware.getEncoderValues());
-            telemetry.update();
+    @Override
+    public void loop()  {
+        if (hardware.ENCODER_TARGET_POSITION < Math.abs(hardware.getEncoderValues())) {
+            requestOpModeStop();}
+        hardware.strafe(-0.6);
+        telemetry.addData("Encoder", hardware.getEncoderValues());
+        telemetry.update();
 
-        }
     }
 }

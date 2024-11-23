@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Hardware {
     private final OpMode callingOpMode;
-    public int ARM_INIT_POSITION = 0, ARM_MIN_POSITION = 0, ARM_MAX_POSITION = 235, ENCODER_TARGET_POSITION = 180;
+    public int ARM_INIT_POSITION = 0, ARM_MIN_POSITION = 0, ARM_MAX_POSITION = 235, ENCODER_TARGET_POSITION = 10;
     public double CLAW_INIT_POSITION = 0.41, CLAW_MIN_POSITION = 0.15, CLAW_MAX_POSITION = 0.41  ;
     // ElapsedTime timer = new ElapsedTime();
     // Move these to a separate Constants object
@@ -74,7 +74,7 @@ public class Hardware {
 
 
     public int getEncoderValues () {
-        return ((leftDrive.getCurrentPosition() + rightDrive.getCurrentPosition()) / 2);
+        return transverseDrive.getCurrentPosition();
     }
     public int rotateArm(double rotation) {
 
