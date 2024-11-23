@@ -35,7 +35,7 @@ public class TeleOpArcade extends OpMode {
             clawTarget = hardware.moveClaw(true);
         }
 
-        if (gamepad1.right_bumper) {
+        else if (gamepad1.right_bumper) {
             clawTarget = hardware.moveClaw(false);
         }
 
@@ -53,7 +53,7 @@ public class TeleOpArcade extends OpMode {
         }
 
         telemetry.addData("Claw motion", gamepad1.left_bumper || gamepad1.right_bumper);
-        telemetry.addData("Arm target", target);
+        telemetry.addData("Claw target", clawTarget);
 
         if (clawTarget >= hardware.CLAW_MIN_POSITION && clawTarget <= hardware.CLAW_MAX_POSITION) {
             telemetry.addData("Claw movable", true);
