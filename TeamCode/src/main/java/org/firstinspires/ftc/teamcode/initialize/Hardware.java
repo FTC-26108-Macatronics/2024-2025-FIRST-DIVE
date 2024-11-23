@@ -10,7 +10,7 @@ public class Hardware {
     public double CLAW_INIT_POSITION = 0.41, CLAW_MIN_POSITION = 0.15, CLAW_MAX_POSITION = 0.41  ;
     // ElapsedTime timer = new ElapsedTime();
     // Move these to a separate Constants object
-    double K_P = 0.3;
+    double K_P = 0.2;
 
     // double Ki = 0;
     // double Kd = 0;
@@ -78,9 +78,10 @@ public class Hardware {
     }
     public int rotateArm(double rotation) {
 
-        if (target >= ARM_MIN_POSITION && target <= ARM_MAX_POSITION) {
+        /*if (target >= ARM_MIN_POSITION && target <= ARM_MAX_POSITION) {
             target += (int) rotation;
-        }
+        }*/
+        target += (int) rotation;
 
         // timer.reset();
         arm.setPower(pid(target));
