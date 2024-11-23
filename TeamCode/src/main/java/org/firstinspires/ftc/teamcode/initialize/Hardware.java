@@ -1,63 +1,92 @@
 package org.firstinspires.ftc.teamcode.initialize;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class Hardware {
-    private OpMode callingOpMode = null;
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
-    private DcMotor transverseDrive = null;
+    private final OpMode callingOpMode;
+    public int ARM_INIT_POSITION = 50, ARM_MIN_POSITION = 0, ARM_MAX_POSITION = 235;
+    public double CLAW_INIT_POSITION = 0, CLAW_MIN_POSITION = 0, CLAW_MAX_POSITION = 0.2;
+    // ElapsedTime timer = new ElapsedTime();
+    // Move these to a separate Constants object
+    double K_P = 0.3;
 
-    private DcMotorEx armHex = null;
+    // double Ki = 0;
+    // double Kd = 0;
+    // These need to be in the class
+    int target = 0;
+    double clawTarget = 0, CLAW_VELOCITY = 0.01;
+
+    // double i = 0, d = 0;
+    // double lastError = 0;
+
+    private DcMotorEx leftDrive = null;
+    private DcMotorEx rightDrive = null;
+    private DcMotorEx transverseDrive = null;
+    private DcMotorEx arm = null;
+    private Servo claw = null;
 
     public Hardware(OpMode opmode) {
         callingOpMode = opmode;
     }
 
     public void init() {
-        callingOpMode.telemetry.addData("Status", "Initialize");
+        callingOpMode.telemetry.addData("Status", "Initializing");
         callingOpMode.telemetry.update();
 
-        armHex = callingOpMode.hardwareMap.get(DcMotorEx.class, "armHex");
-        leftDrive = callingOpMode.hardwareMap.get(DcMotor.class, "leftDrive");
-        rightDrive = callingOpMode.hardwareMap.get(DcMotor.class, "rightDrive");
-        transverseDrive = callingOpMode.hardwareMap.get(DcMotor.class, "transverseDrive");
+        leftDrive = callingOpMode.hardwareMap.get(DcMotorEx.class, "leftDrive");
+        rightDrive = callingOpMode.hardwareMap.get(DcMotorEx.class, "rightDrive");
+        transverseDrive = callingOpMode.hardwareMap.get(DcMotorEx.class, "transverseDrive");
+        arm = callingOpMode.hardwareMap.get(DcMotorEx.class, "arm");
+        claw = callingOpMode.hardwareMap.get(Servo.class, "claw");
 
-        armHex.setDirection(DcMotor.Direction.FORWARD);
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        transverseDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        transverseDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        arm.setTargetPosition(ARM_INIT_POSITION);
+        claw.setPosition(CLAW_INIT_POSITION);
 
-        // initilizing the arm requires a pre-set position change this as you go please
-        armHex.setTargetPosition(300);
+        //claw.scaleRange(CLAW_MIN_POSITION, CLAW_MAX_POSITION);
 
-        armHex.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        transverseDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        transverseDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        arm.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        callingOpMode.telemetry.addData("Status", "Standby");
+        leftDrive.setDirection(DcMotorEx.Direction.FORWARD);
+        rightDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        transverseDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        // encoder - dr n tested arm.setDirection(DcMotorEx.Direction.FORWARD);
+        arm.setDirection(DcMotorEx.Direction.REVERSE);
+        claw.setDirection(Servo.Direction.FORWARD);
+
+        leftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        transverseDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        callingOpMode.telemetry.addData("Status", "Ready");
         callingOpMode.telemetry.update();
-
-        // remove this and test
-        armHex.setTargetPosition(300);
-        armHex.setVelocity(200);
     }
 
-    public void armRotation(double controllerInput, int max){
+    public int rotateArm(double rotation) {
 
-        // use custom mapVal(); and test
-        armHex.setTargetPosition((int)((controllerInput*360)+max));
+        if (target >= ARM_MIN_POSITION && target <= ARM_MAX_POSITION) {
+            target += (int) rotation;
+        }
+
+        // timer.reset();
+        arm.setPower(pid(target));
+
+        return target;
     }
 
-
-    public void setDrivePower(double leftWheel, double rightWheel) {
-        leftDrive.setPower(leftWheel);
-        rightDrive.setPower(rightWheel);
+    public void setDrivePower(double left, double right) {
+        leftDrive.setPower(left);
+        rightDrive.setPower(right);
     }
 
     public void strafe(double pwr) {
@@ -65,8 +94,8 @@ public class Hardware {
     }
 
     public void driveArcade(double drive, double turn) {
-        double leftPwr = drive - turn;
-        double rightPwr = drive + turn;
+        double leftPwr = drive + turn;
+        double rightPwr = drive - turn;
         double max = Math.max(Math.abs(leftPwr), Math.abs(rightPwr));
 
         if (max > 1.0) {
@@ -75,5 +104,30 @@ public class Hardware {
         }
 
         setDrivePower(leftPwr, rightPwr);
+    }
+
+    public int armPosition() {
+        return arm.getCurrentPosition();
+    }
+
+
+    public double pid(int target) {
+        double error = target - armPosition();
+        //d = (error - lastError) / timer.seconds();
+        //i += error * timer.seconds();
+        //lastError = error;
+        return (K_P * error)/* + (Ki * i) + (Kd * d)*/;
+    }
+
+    public double moveClaw(boolean direction) {
+        if (direction) {
+            clawTarget += CLAW_VELOCITY;
+        } else {
+            clawTarget -= CLAW_VELOCITY;
+        }
+
+        claw.setPosition(clawTarget);
+
+        return clawTarget;
     }
 }
