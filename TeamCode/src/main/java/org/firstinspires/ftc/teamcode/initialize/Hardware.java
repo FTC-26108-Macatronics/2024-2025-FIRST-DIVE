@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Hardware {
     private final OpMode callingOpMode;
-    public int ARM_INIT_POSITION = 50, ARM_MIN_POSITION = 0, ARM_MAX_POSITION = 235;
-    public double CLAW_INIT_POSITION = 0, CLAW_MIN_POSITION = 0, CLAW_MAX_POSITION = 0.2;
+    public int ARM_INIT_POSITION = 0, ARM_MIN_POSITION = 0, ARM_MAX_POSITION = 235;
+    public double CLAW_INIT_POSITION = 0.41, CLAW_MIN_POSITION = 0.15, CLAW_MAX_POSITION = 0.41  ;
     // ElapsedTime timer = new ElapsedTime();
     // Move these to a separate Constants object
     double K_P = 0.3;
@@ -16,7 +16,7 @@ public class Hardware {
     // double Kd = 0;
     // These need to be in the class
     int target = 0;
-    double clawTarget = 0, CLAW_VELOCITY = 0.01;
+    double clawTarget = CLAW_INIT_POSITION, CLAW_VELOCITY = 0.01;
 
     // double i = 0, d = 0;
     // double lastError = 0;
@@ -49,7 +49,6 @@ public class Hardware {
         arm.setTargetPosition(ARM_INIT_POSITION);
         claw.setPosition(CLAW_INIT_POSITION);
 
-        //claw.scaleRange(CLAW_MIN_POSITION, CLAW_MAX_POSITION);
 
         leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -122,11 +121,21 @@ public class Hardware {
     }
 
     public double moveClaw(boolean direction) {
-        if (direction) {
-            clawTarget += CLAW_VELOCITY;
-        } else {
+
+
+
+
+        if (clawTarget>=CLAW_MIN_POSITION && direction) {
             clawTarget -= CLAW_VELOCITY;
         }
+        else if (clawTarget<=CLAW_MAX_POSITION && !direction)
+        {
+            clawTarget += CLAW_VELOCITY;
+        }
+
+
+
+
 
         claw.setPosition(clawTarget);
 
