@@ -85,6 +85,8 @@ public class Hardware {
     }
 
     public void setDrivePower(double left, double right) {
+        left = ((Math.abs(left) / left) * (Math.pow(left * 0.8, 2)));
+        right = ((Math.abs(right) / right) * (Math.pow(right * 0.8, 2)));
         leftDrive.setPower(left);
         rightDrive.setPower(right);
     }
