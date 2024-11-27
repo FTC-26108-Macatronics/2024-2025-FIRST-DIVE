@@ -66,7 +66,6 @@ public class Hardware {
     }
     public Hardware (OpMode opmode) {
         callingOpMode = opmode;
-        configureMotors();
     }
 
 }
