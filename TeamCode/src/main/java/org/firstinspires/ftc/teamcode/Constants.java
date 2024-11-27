@@ -6,7 +6,6 @@ public final class Constants {
                                 driveMultiplier = 0.7;
 
   }
-  
   public static class ArmConstants {
   }
 

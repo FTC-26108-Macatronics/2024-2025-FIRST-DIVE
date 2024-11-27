@@ -1,10 +1,6 @@
 package org.firstinspires.ftc.teamcode.initialize;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import org.firstinspires.ftc.teamcode.Constants;
 
 public class Hardware {
 
@@ -55,10 +51,6 @@ public class Hardware {
 
     public void setPowerTransverse(double power) {
         transverseDrive.setPower(power);
-    }
-
-    public void setPowerArmHex(double power) {
-        armHex.setPower(power);
     }
 
     public void setPositionArmHex(int position) {

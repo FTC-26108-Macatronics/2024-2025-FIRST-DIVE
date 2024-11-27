@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode.commands.teleopCommands.drive;
 import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.driveMultiplier;
 
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-
-import org.firstinspires.ftc.teamcode.initialize.Hardware;
 import org.firstinspires.ftc.teamcode.RobotContainer;
 public class DriveMethods {
 
-    private double leftPwr, rightPwr, max;
     public DriveMethods() {}
+
+    interface DrivePower {
+        double selectedMotor(double wheelMotor);
+    }
+    DrivePower changeMotorPower = (motor) -> ((Math.abs(motor) / motor) * (Math.pow(motor * driveMultiplier, 2)));
     public void setDrivePower(double leftWheel, double rightWheel) {
 
         // Adding an exponential value to the inputs allows for a finer control over the motors.
@@ -18,8 +19,8 @@ public class DriveMethods {
 
         // Drive multiplier should always be set under 1 to prevent unnecessary strain on the motors (this will reduce speed, however. change accordingly.
 
-        leftWheel = ((Math.abs(leftWheel) / leftWheel) * (Math.pow(leftWheel * driveMultiplier, 2)));
-        rightWheel = ((Math.abs(rightWheel) / rightWheel) * (Math.pow(rightWheel * driveMultiplier, 2)));
+        leftWheel = changeMotorPower.selectedMotor(leftWheel);
+        rightWheel = changeMotorPower.selectedMotor(rightWheel);
 
         RobotContainer.m_Hardware.setPowerLeft(leftWheel);
         RobotContainer.m_Hardware.setPowerRight(rightWheel);
@@ -29,6 +30,8 @@ public class DriveMethods {
     }
 
     public void driveArcade(double drive, double turn) {
+
+        double leftPwr, rightPwr, max;
 
         leftPwr = drive + turn;
         rightPwr = drive - turn;
