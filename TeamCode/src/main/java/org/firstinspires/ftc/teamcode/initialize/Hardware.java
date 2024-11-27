@@ -8,18 +8,13 @@ import org.firstinspires.ftc.teamcode.Constants;
 
 public class Hardware {
 
-    protected OpMode callingOpMode;
+    private final OpMode callingOpMode;
+    private DcMotorEx leftDrive = null;
+    private DcMotorEx rightDrive = null;
+    private DcMotorEx transverseDrive = null;
+    private DcMotorEx armHex = null;
 
-    protected DcMotorEx leftDrive, rightDrive, transverseDrive, armHex;
-
-    public Hardware() {
-    }
-
-    public Hardware (OpMode opmode) {
-        callingOpMode = opmode;
-    }
-
-    public void init() {
+    public void configureMotors() {
         callingOpMode.telemetry.addData("Status", "Initialize");
         callingOpMode.telemetry.update();
 
@@ -28,18 +23,18 @@ public class Hardware {
         rightDrive = callingOpMode.hardwareMap.get(DcMotorEx.class, "rightDrive");
         transverseDrive = callingOpMode.hardwareMap.get(DcMotorEx.class, "transverseDrive");
 
-        armHex.setDirection(DcMotor.Direction.FORWARD);
+        armHex.setDirection(DcMotorEx.Direction.FORWARD);
         leftDrive.setDirection(DcMotorEx.Direction.REVERSE);
         rightDrive.setDirection(DcMotorEx.Direction.FORWARD);
-        transverseDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        transverseDrive.setDirection(DcMotorEx.Direction.FORWARD);
 
-        armHex.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armHex.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         leftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         transverseDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         armHex.setTargetPosition(300);
-        armHex.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armHex.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         transverseDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -49,6 +44,29 @@ public class Hardware {
 
         armHex.setTargetPosition(300);
         armHex.setVelocity(200);
+    }
+    public void setPowerLeft(double power) {
+        leftDrive.setPower(power);
+    }
+
+    public void setPowerRight(double power) {
+        rightDrive.setPower(power);
+    }
+
+    public void setPowerTransverse(double power) {
+        transverseDrive.setPower(power);
+    }
+
+    public void setPowerArmHex(double power) {
+        armHex.setPower(power);
+    }
+
+    public void setPositionArmHex(int position) {
+        armHex.setTargetPosition(position);
+    }
+    public Hardware (OpMode opmode) {
+        callingOpMode = opmode;
+        configureMotors();
     }
 
 }

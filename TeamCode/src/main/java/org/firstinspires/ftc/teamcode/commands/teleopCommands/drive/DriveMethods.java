@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.commands.teleopCommands.drive;
 import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.driveMultiplier;
-import org.firstinspires.ftc.teamcode.initialize.Hardware;
 
-public class DriveMethods extends Hardware {
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import org.firstinspires.ftc.teamcode.initialize.Hardware;
+import org.firstinspires.ftc.teamcode.RobotContainer;
+public class DriveMethods {
 
     private double leftPwr, rightPwr, max;
     public DriveMethods() {}
@@ -18,26 +21,25 @@ public class DriveMethods extends Hardware {
         leftWheel = ((Math.abs(leftWheel) / leftWheel) * (Math.pow(leftWheel * driveMultiplier, 2)));
         rightWheel = ((Math.abs(rightWheel) / rightWheel) * (Math.pow(rightWheel * driveMultiplier, 2)));
 
-        this.leftDrive.setPower(leftWheel);
-        this.rightDrive.setPower(rightWheel);
+        RobotContainer.m_Hardware.setPowerLeft(leftWheel);
+        RobotContainer.m_Hardware.setPowerRight(rightWheel);
     }
-
     public void strafe(double pwr) {
-        this.transverseDrive.setPower(pwr);
+        RobotContainer.m_Hardware.setPowerTransverse(pwr);
     }
 
     public void driveArcade(double drive, double turn) {
 
-        this.leftPwr = drive + turn;
-        this.rightPwr = drive - turn;
-        this.max = Math.max(Math.abs(this.leftPwr), Math.abs(this.rightPwr));
+        leftPwr = drive + turn;
+        rightPwr = drive - turn;
+        max = Math.max(Math.abs(leftPwr), Math.abs(rightPwr));
 
-        if (this.max > 1.0) {
-            this.leftPwr /= this.max;
-            this.rightPwr /= this.max;
+        if (max > 1.0) {
+            leftPwr /= max;
+            rightPwr /= max;
         }
 
-        setDrivePower(this.leftPwr, this.rightPwr);
+        setDrivePower(leftPwr, rightPwr);
     }
 
 }

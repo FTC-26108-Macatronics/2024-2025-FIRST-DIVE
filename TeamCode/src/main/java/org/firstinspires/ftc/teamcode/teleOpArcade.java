@@ -11,14 +11,15 @@ import org.firstinspires.ftc.teamcode.initialize.Hardware;
 
 @TeleOp
 public class teleOpArcade extends OpMode {
-    final private Hardware hardware = new Hardware(this);
     final private DriveMethods m_driveMethods = new DriveMethods();
     final private ArmMethods m_armMethods = new ArmMethods();
+    public static OpMode opmode;
+
     double drive, turn, strafePwr;
 
     @Override
     public void init() {
-        hardware.init();
+        RobotContainer.m_Hardware.configureMotors();
     }
 
     @Override
