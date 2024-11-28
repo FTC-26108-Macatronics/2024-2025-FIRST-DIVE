@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.strafeMultiplier;
+import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.getStrafeMultiplier;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -11,30 +11,12 @@ import org.firstinspires.ftc.teamcode.initialize.Hardware;
 
 @TeleOp
 public class teleOpArcade extends OpMode {
-    final private DriveMethods m_driveMethods = new DriveMethods();
-    final private ArmMethods m_armMethods = new ArmMethods();
-    public static OpMode opmode;
+    private DriveMethods m_DriveMethods;
+    private ArmMethods m_ArmMethods;
+    public static Hardware m_Hardware;
+    private double drive, turn, strafePwr;
 
-    double drive, turn, strafePwr;
-
-    @Override
-    public void init() {
-        RobotContainer.m_Hardware.configureMotors();
-    }
-
-    @Override
-    public void loop() {
-        telemetry.addData("Status", "Running");
-
-        drive = -gamepad1.left_stick_y;
-        turn = gamepad1.right_stick_x;
-
-        strafePwr = (gamepad1.dpad_left) ? (strafeMultiplier) : (gamepad1.dpad_right) ? (-strafeMultiplier) : (0);
-
-        m_driveMethods.strafe(strafePwr);
-        m_driveMethods.driveArcade(drive, turn);
-        m_armMethods.armRotation(gamepad1.right_trigger, 90);
-
+    void getTelemetry() {
         telemetry.addData("D-Pad left", gamepad1.dpad_left);
         telemetry.addData("D-Pad right", gamepad1.dpad_right);
         telemetry.addData("Left joystick y", gamepad1.left_stick_y);
@@ -43,5 +25,37 @@ public class teleOpArcade extends OpMode {
         telemetry.addData("Drive", drive);
         telemetry.addData("Turn", turn);
         telemetry.update();
+    }
+
+    float getControllerOneLeftStickY() {
+        return gamepad1.left_stick_y;
+    }
+
+    float getControllerOneRightStickX() {
+        return gamepad1.right_stick_x;
+    }
+
+    @Override
+    public void init() {
+        m_Hardware = new Hardware(this);
+        m_ArmMethods = new ArmMethods();
+        m_DriveMethods = new DriveMethods();
+    }
+
+    @Override
+    public void loop() {
+        telemetry.addData("Status", "Running");
+
+        drive = -getControllerOneLeftStickY();
+        turn = getControllerOneRightStickX();
+
+        strafePwr = (gamepad1.dpad_left) ? (getStrafeMultiplier()) : (gamepad1.dpad_right) ? (-getStrafeMultiplier()) : (0);
+
+        m_DriveMethods.strafe(strafePwr);
+        m_DriveMethods.driveArcade(drive, turn);
+        m_ArmMethods.armRotation(gamepad1.right_trigger, 90);
+
+        getTelemetry();
+
     }
 }

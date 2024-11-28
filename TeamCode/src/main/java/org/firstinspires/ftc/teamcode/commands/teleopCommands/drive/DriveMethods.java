@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands.teleopCommands.drive;
-import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.driveMultiplier;
+import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.getDriveMultiplier;
 
-import org.firstinspires.ftc.teamcode.RobotContainer;
+import org.firstinspires.ftc.teamcode.teleOpArcade;
 public class DriveMethods {
 
     public DriveMethods() {}
@@ -9,7 +9,7 @@ public class DriveMethods {
     interface DrivePower {
         double selectedMotor(double wheelMotor);
     }
-    DrivePower changeMotorPower = (motor) -> ((Math.abs(motor) / motor) * (Math.pow(motor * driveMultiplier, 2)));
+    DrivePower changeMotorPower = (motor) -> ((Math.abs(motor) / motor) * (Math.pow(motor * getDriveMultiplier(), 2)));
     public void setDrivePower(double leftWheel, double rightWheel) {
 
         // Adding an exponential value to the inputs allows for a finer control over the motors.
@@ -22,17 +22,14 @@ public class DriveMethods {
         leftWheel = changeMotorPower.selectedMotor(leftWheel);
         rightWheel = changeMotorPower.selectedMotor(rightWheel);
 
-        RobotContainer.m_Hardware.setPowerLeft(leftWheel);
-        RobotContainer.m_Hardware.setPowerRight(rightWheel);
+        teleOpArcade.m_Hardware.setPowerLeft(leftWheel);
+        teleOpArcade.m_Hardware.setPowerRight(rightWheel);
     }
     public void strafe(double pwr) {
-        RobotContainer.m_Hardware.setPowerTransverse(pwr);
+        teleOpArcade.m_Hardware.setPowerTransverse(pwr);
     }
-
     public void driveArcade(double drive, double turn) {
-
         double leftPwr, rightPwr, max;
-
         leftPwr = drive + turn;
         rightPwr = drive - turn;
         max = Math.max(Math.abs(leftPwr), Math.abs(rightPwr));

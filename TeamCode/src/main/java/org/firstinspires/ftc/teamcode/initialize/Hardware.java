@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.initialize;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
@@ -58,6 +59,8 @@ public class Hardware {
     }
     public Hardware (OpMode opmode) {
         callingOpMode = opmode;
+        configureMotors();
     }
+
 
 }
