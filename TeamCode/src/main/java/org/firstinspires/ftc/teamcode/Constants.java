@@ -15,6 +15,7 @@ public final class Constants {
   }
 
   public static class ArmConstants {
+    public static int armTarget = 0;
   }
 
   public static class AutonomousConstants {

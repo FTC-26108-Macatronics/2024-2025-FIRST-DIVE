@@ -1,13 +1,21 @@
 package org.firstinspires.ftc.teamcode.commands.teleopCommands.arm;
-
+import static org.firstinspires.ftc.teamcode.Constants.DriveConstants;
 import org.firstinspires.ftc.teamcode.teleOpArcade;
+
 
 public class ArmMethods {
     public ArmMethods() {}
-    public void armRotation(double controllerInput, int max){
+    public int rotateArm(double rotation) {
 
-        // use custom mapVal(); and test
-        teleOpArcade.m_Hardware.setPositionArmHex((int)((controllerInput * 360) + max));
+        /*if (target >= ARM_MIN_POSITION && target <= ARM_MAX_POSITION) {
+            target += (int) rotation;
+        }*/
+        teleOpArcade.target += (int) rotation;
+
+        // timer.reset();
+        arm.setPower(pid(target));
+
+        return target;
     }
 
 }
