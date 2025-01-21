@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands.teleopCommands.drive;
-import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.getDriveMultiplier;
+import static org.firstinspires.ftc.teamcode.Constants.DriveConstants;
 
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.teleOpArcade;
 public class DriveMethods {
 
@@ -9,7 +10,7 @@ public class DriveMethods {
     interface DrivePower {
         double selectedMotor(double wheelMotor);
     }
-    DrivePower changeMotorPower = (motor) -> ((Math.abs(motor) / motor) * (Math.pow(motor * getDriveMultiplier(), 2)));
+    DrivePower changeMotorPower = (motor) -> ((Math.abs(motor) / motor) * (Math.pow(motor * Constants.DriveConstants.driveMultiplier, 2)));
     public void setDrivePower(double leftWheel, double rightWheel) {
 
         // Adding an exponential value to the inputs allows for a finer control over the motors.
@@ -17,7 +18,7 @@ public class DriveMethods {
         // The exponential value is recommended to be 2, but can also be larger numbers if necessary.
         // The (Math.abs(leftWheel) / leftWheel) section of the code is to ensure the negative inputs from the controllers aren't changed to positive by the exponent.
 
-        // Drive multiplier should always be set under 1 to prevent unnecessary strain on the motors (this will reduce speed, however. change accordingly.
+        // Drive multiplier should always be set under 1 to prevent unnecessary strain on the motors (this will reduce speed, however, so change accordingly.
 
         leftWheel = changeMotorPower.selectedMotor(leftWheel);
         rightWheel = changeMotorPower.selectedMotor(rightWheel);
@@ -25,8 +26,7 @@ public class DriveMethods {
         teleOpArcade.m_Hardware.setPowerLeft(leftWheel);
         teleOpArcade.m_Hardware.setPowerRight(rightWheel);
     }
-    public void strafe(double pwr) {
-        teleOpArcade.m_Hardware.setPowerTransverse(pwr);
+    public void strafe(double pwr) {teleOpArcade.m_Hardware.setPowerTransverse(pwr);
     }
     public void driveArcade(double drive, double turn) {
         double leftPwr, rightPwr, max;

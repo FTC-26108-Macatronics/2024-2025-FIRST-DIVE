@@ -6,29 +6,42 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.commands.teleopCommands.arm.ArmMethods;
 import org.firstinspires.ftc.teamcode.commands.teleopCommands.drive.DriveMethods;
 import org.firstinspires.ftc.teamcode.initialize.Hardware;
-
 @TeleOp
 public class teleOpArcade extends OpMode {
     private DriveMethods m_DriveMethods;
     private ArmMethods m_ArmMethods;
     public static Hardware m_Hardware;
     private double drive, turn, strafePwr, armRotation;
+
     public static double clawTarget;
     public static int target;
 
     void getTelemetry() {
+        //0 - leftDrive
+        //1 - rightDrive
+        //2 - transverseDrive
+        //3 - lift
+
         telemetry.addData("Drive", drive);
         telemetry.addData("Turn", turn);
+
         telemetry.addData("Strafe power", strafePwr);
+
+        telemetry.addData("Lift current position", m_Hardware.getLiftCurrentPosition());
+        telemetry.addData("Lift moving up", getControllerOneDPadUp());
+        telemetry.addData("Lift moving down", getControllerOneDPadDown());
+
         telemetry.addData("Arm rotation", armRotation);
         telemetry.addData("Arm position ", m_Hardware.getArmPosition());
         telemetry.addData("Arm target", target);
+
 
         if (target >= Constants.ArmConstants.ARM_MIN_POSITION && target <= Constants.ArmConstants.ARM_MAX_POSITION) {
             telemetry.addData("Arm movable", true);
         } else {
             telemetry.addData("Arm movable", false);
         }
+
 
         telemetry.addData("Claw motion", gamepad1.left_bumper || gamepad1.right_bumper);
         telemetry.addData("Claw target", clawTarget);
@@ -38,10 +51,11 @@ public class teleOpArcade extends OpMode {
         } else {
             telemetry.addData("Claw movable", false);
         }
+
         telemetry.update();
     }
 
-    float getControllerOneLeftStickY() {
+    public float getControllerOneLeftStickY() {
         return -gamepad1.left_stick_y;
     }
 
@@ -52,6 +66,13 @@ public class teleOpArcade extends OpMode {
         return -gamepad1.left_stick_x;
     }
 
+    boolean getControllerOneDPadUp() {
+        return gamepad1.dpad_up;
+    }
+
+    boolean getControllerOneDPadDown() {
+        return gamepad1.dpad_down;
+    }
     float getArmRotationValues() {
         return gamepad1.left_trigger - gamepad1.right_trigger;
     }
@@ -63,6 +84,12 @@ public class teleOpArcade extends OpMode {
         return gamepad1.right_bumper;
     }
 
+    void getControllerInputs() {
+        drive = getControllerOneLeftStickY();
+        turn = getControllerOneRightStickX();
+        strafePwr = getControllerOneLeftStickX();
+        armRotation = getArmRotationValues();
+    }
 
     @Override
     public void init() {
@@ -75,17 +102,23 @@ public class teleOpArcade extends OpMode {
     public void loop() {
         telemetry.addData("Status", "Running");
 
-        drive = getControllerOneLeftStickY();
-        turn = getControllerOneRightStickX();
-        strafePwr = getControllerOneLeftStickX();
-        armRotation = getArmRotationValues();
+        getControllerInputs();
 
         m_DriveMethods.strafe(strafePwr);
         m_DriveMethods.driveArcade(drive, turn);
 
+        if (getControllerOneDPadUp()) {
+            m_Hardware.moveLiftUp(m_Hardware.getLiftCurrentPosition());
+        }
+
+        else if (getControllerOneDPadDown()) {
+            m_Hardware.moveLiftDown(m_Hardware.getLiftCurrentPosition());
+        }
+
         target = m_ArmMethods.rotateArm(armRotation);
 
         m_ArmMethods.rotateArm(armRotation);
+
 
         if (getControllerOneLeftBumper()) {
             clawTarget = m_ArmMethods.moveClaw(true);

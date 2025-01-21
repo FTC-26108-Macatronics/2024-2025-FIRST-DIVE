@@ -4,12 +4,13 @@ import org.firstinspires.ftc.teamcode.teleOpArcade;
 
 
 public class ArmMethods {
+
     public ArmMethods() {}
     public int rotateArm(double rotation) {
 
-        /*if (target >= ARM_MIN_POSITION && target <= ARM_MAX_POSITION) {
-            target += (int) rotation;
-        }*/
+        if (teleOpArcade.target >= Constants.ArmConstants.ARM_MIN_POSITION && teleOpArcade.target <= Constants.ArmConstants.ARM_MAX_POSITION) {
+            teleOpArcade.target += (int) rotation;
+        }
         teleOpArcade.target += (int) rotation;
 
         // timer.reset();
