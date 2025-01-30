@@ -5,62 +5,52 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
 public class TeleOpMode extends OpMode {
-    double drive, turn, strafePwr;
-
-    Hardware hardware = new Hardware(this);
+    RobotHardware robot = new RobotHardware(this);
 
     @Override
     public void init() {
-        hardware.init();
+        robot.init();
     }
 
     @Override
     public void loop() {
-        telemetry.addData("Status", "Running");
+        telemetry.addData(">", "OpMode active");
 
-        drive = -gamepad1.left_stick_y;
-        turn = gamepad1.right_stick_x;
-        strafePwr = -gamepad1.left_stick_x;
+        boolean override = false;
+        if (gamepad1.options) {
+            override = true;
+            telemetry.addData("!OVERRIDE", "ACTIVE!");
+        }
+
+        double drive = -gamepad1.left_stick_y;
+        double turn = gamepad1.right_stick_x;
+        double strafe = -gamepad1.left_stick_x;
 
         if (gamepad1.left_bumper) {
-            hardware.moveClaw(true);
+            robot.moveClaw(true);
             telemetry.addData("Claw", "Open");
         } else if (gamepad1.right_bumper) {
-            hardware.moveClaw(false);
+            robot.moveClaw(false);
             telemetry.addData("Claw", "Closed");
         } else {
             telemetry.addData("Claw", "Break");
         }
 
-        /*if (gamepad1.dpad_up) {
-            telemetry.addData("Lift position", hardware.moveLift(2));
-            telemetry.addData("Lift state", "Up");
-        }
-        else if (gamepad1.dpad_down) {
-            telemetry.addData("Lift position", hardware.moveLift(1));
-            telemetry.addData("Lift state", "Down");
-        }
-        else {
-            telemetry.addData("Lift position", hardware.moveLift(0));
-            telemetry.addData("Lift state", "Break");
-        }*/
-
-        if (gamepad1.dpad_up) {
-            hardware.setLift(1.0);
-        } else if (gamepad1.dpad_down) {
-            hardware.setLift(-1.0);
+        if (gamepad1.dpad_up && !gamepad1.dpad_down) {
+            telemetry.addData("Lift pwr", robot.moveLift(2, override));
+        } else if (gamepad1.dpad_down && !gamepad1.dpad_up) {
+            telemetry.addData("Lift pwr", robot.moveLift(1, override));
         } else {
-            hardware.setLift(0);
+            telemetry.addData("Lift pwr", robot.moveLift(0, override));
         }
 
-        hardware.strafe(strafePwr);
-        hardware.driveArcade(drive, turn);
+        robot.strafe(strafe);
+        robot.driveArcade(drive, turn);
 
         telemetry.addData("Drive", drive);
         telemetry.addData("Turn", turn);
-        telemetry.addData("Strafe power", strafePwr);
-
-
+        telemetry.addData("Strafe power", strafe);
+        telemetry.addData("Lift", robot.getLift());
         telemetry.update();
     }
 }
