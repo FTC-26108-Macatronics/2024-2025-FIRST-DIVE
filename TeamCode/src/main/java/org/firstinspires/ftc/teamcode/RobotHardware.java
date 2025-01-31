@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class RobotHardware {
     ElapsedTime timer = new ElapsedTime();
-    public static final double MAX_PWR_DT = 1, PWR_LIFT = 1, K_P = 0.05, K_I = 0.003, K_D = 0.003, PWR_CLAW = 0.3, SERVO_OPEN = 0.6, SERVO_CLOSED = 0.7;
+    public static final double MAX_PWR_DT = 1, PWR_LIFT = 1, K_P = 0.05, K_I = 0.003, K_D = 0.003, PWR_CLAW = 0.3, SERVO_OPEN = 0.4, SERVO_CLOSED = 0.7;
     public static final int MAX_LIFT = 8400, MIN_LIFT = 0, MAX_ARM = 420, MIN_ARM = 0, MAX_CLAW = 0, MIN_CLAW = -180;
     public static double target, i, lastError;
     private final OpMode myOpMode;
