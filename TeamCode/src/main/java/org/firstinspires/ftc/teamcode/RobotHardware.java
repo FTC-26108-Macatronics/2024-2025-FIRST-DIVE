@@ -1,13 +1,24 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.RobotConstants.K_D_CLAW;
+import static org.firstinspires.ftc.teamcode.RobotConstants.K_I_CLAW;
+import static org.firstinspires.ftc.teamcode.RobotConstants.K_P_CLAW;
+import static org.firstinspires.ftc.teamcode.RobotConstants.MAX_PWR_DT;
+import static org.firstinspires.ftc.teamcode.RobotConstants.PWR_CLAW;
+import static org.firstinspires.ftc.teamcode.RobotConstants.PWR_LIFT;
+import static org.firstinspires.ftc.teamcode.RobotConstants.SERVO_CLOSED;
+import static org.firstinspires.ftc.teamcode.RobotConstants.SERVO_OPEN;
+
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class RobotHardware {
-    public static final double MAX_PWR_DT = 0.5, PWR_LIFT = 1, K_P_ARM = 0.05, K_I_ARM = 0.003, K_D_ARM = 0.003, PWR_CLAW = 1.0, SERVO_OPEN = 0.4, SERVO_CLOSED = 0.7;
-    public static final double K_P_CLAW = 0.1, K_I_CLAW = 0, K_D_CLAW = 0;
+
     public static final int MAX_LIFT = 8400, MIN_LIFT = 0, MAX_ARM = 420, MIN_ARM = 0, MAX_CLAW = 0, MIN_CLAW = -180;
     public static double targetArm, iArm, lastErrorArm;
     public static double targetClaw, iClaw, lastErrorClaw;
@@ -21,10 +32,11 @@ public class RobotHardware {
     private DcMotorEx liftMotor = null;
     private DcMotorEx armMotor = null;
     private Servo clawServo = null;
+
+
     public RobotHardware(OpMode opmode) {
         myOpMode = opmode;
     }
-
 
     public void init() {
         targetArm = 0;
@@ -78,6 +90,7 @@ public class RobotHardware {
 
         myOpMode.telemetry.addData(">", "Initialized");
         myOpMode.telemetry.update();
+
     }
 
     public void setDrivePower(double left, double right) {
@@ -132,7 +145,7 @@ public class RobotHardware {
         armMotor.setPower(pwr);
     }
 
-    public void moveArm(double rotation, boolean override) {
+    public double moveArm(double rotation, boolean override) {
         if (((rotation > 0 && getArm() < MAX_ARM) || (rotation < 0 && getArm() > MIN_ARM)) || override) {
             targetArm += rotation;
         }
@@ -140,10 +153,12 @@ public class RobotHardware {
         double error = targetArm - getArm();
         iArm += error * timerArm.seconds();
 
-        setArm((K_P_ARM * error) + (K_I_ARM * iArm) + (K_D_ARM * ((error - lastErrorArm) / timerArm.seconds())));
+        setArm((RobotConstants.K_P_ARM * error) + (RobotConstants.K_I_ARM * iArm) + (RobotConstants.K_D_ARM * ((error - lastErrorArm) / timerArm.seconds())));
 
         lastErrorArm = error;
         timerArm.reset();
+
+        return error;
     }
 
     public int getClaw() {
@@ -154,7 +169,7 @@ public class RobotHardware {
         clawMotor.setPower(pwr);
     }
 
-    public void rotateClaw(int state, boolean override) {
+    public double rotateClaw(int state, boolean override) {
         if (state == 2 && (getClaw() < MAX_CLAW || override)) {
             targetClaw += PWR_CLAW;
         }
@@ -170,6 +185,7 @@ public class RobotHardware {
 
         lastErrorClaw = error;
         timerClaw.reset();
+        return error;
     }
 
     public void moveClaw(boolean state) {

@@ -1,27 +1,48 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @TeleOp
 public class TeleOpMode extends OpMode {
     RobotHardware robot = new RobotHardware(this);
     boolean clawState;
+    FtcDashboard dashboard;
+    Telemetry dashboardTelemetry;
+
+    double clawError = 0, armError = 0;
 
     @Override
     public void init() {
         robot.init();
+        dashboard = FtcDashboard.getInstance();
+        dashboardTelemetry = dashboard.getTelemetry();
     }
 
     @Override
     public void loop() {
-        telemetry.addData(">", "OpMode active");
+
+        dashboardTelemetry.addData("Claw KP", RobotConstants.K_P_CLAW);
+        dashboardTelemetry.addData("Claw KI", RobotConstants.K_I_CLAW);
+        dashboardTelemetry.addData("Claw KD", RobotConstants.K_D_CLAW);
+
+        dashboardTelemetry.addData("Arm KP", RobotConstants.K_P_ARM);
+        dashboardTelemetry.addData("Arm KI", RobotConstants.K_I_ARM);
+        dashboardTelemetry.addData("Arm KD", RobotConstants.K_D_ARM);
+
+        dashboardTelemetry.addData("Claw Error", clawError);
+        dashboardTelemetry.addData("Arm Error", armError);
+
+        dashboardTelemetry.addData(">", "OpMode active");
 
         boolean override = false;
 
         if (gamepad1.options) {
             override = true;
-            telemetry.addData("!OVERRIDE", "ACTIVE!");
+            dashboardTelemetry.addData("!OVERRIDE", "ACTIVE!");
         }
 
         double drive = -gamepad1.left_stick_y;
@@ -30,9 +51,9 @@ public class TeleOpMode extends OpMode {
         double arm = gamepad1.left_trigger - gamepad1.right_trigger;
         int liftState = 0, clawRState = 0;
 
-        if (gamepad1.dpad_up && !gamepad1.dpad_down) {
+        if ((gamepad1.dpad_up && !gamepad1.dpad_down) || (gamepad2.dpad_up && !gamepad2.dpad_down)) {
             liftState = 2;
-        } else if (gamepad1.dpad_down && !gamepad1.dpad_up) {
+        } else if ((gamepad1.dpad_down && !gamepad1.dpad_up) || (gamepad2.dpad_down && !gamepad2.dpad_up)) {
             liftState = 1;
         }
 
@@ -51,9 +72,9 @@ public class TeleOpMode extends OpMode {
         robot.driveArcade(drive, turn);
         robot.strafe(strafe);
         robot.moveLift(liftState, override);
-        robot.moveArm(arm, override);
-        robot.rotateClaw(clawRState, override);
         robot.moveClaw(clawState);
-        telemetry.update();
+        armError = robot.moveArm(arm, override);
+        clawError = robot.rotateClaw(clawRState, override);
+        dashboardTelemetry.update();
     }
 }
