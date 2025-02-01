@@ -83,9 +83,7 @@ public class AutoOpMode extends LinearOpMode {
         telemetry.addData("Starting at", "%7d :%7d", leftDrive.getCurrentPosition(), rightDrive.getCurrentPosition());
         telemetry.update();
         waitForStart();
-        encoderDrive(DRIVE_SPEED, 10, 10, 3.0);
-        encoderDrive(TURN_SPEED, -12, 12, 4.0);
-        encoderDrive(DRIVE_SPEED, 20, 20, 5.0);
+        encoderDrive(DRIVE_SPEED, 40, 40, 5.0);
         moveLift(2);
         sleep(1000);
         moveArm(0.5);
