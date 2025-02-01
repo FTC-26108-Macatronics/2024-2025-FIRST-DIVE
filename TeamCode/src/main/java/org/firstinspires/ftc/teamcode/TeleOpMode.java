@@ -30,9 +30,9 @@ public class TeleOpMode extends OpMode {
         double arm = gamepad1.left_trigger - gamepad1.right_trigger;
         int liftState = 0, clawRState = 0;
 
-        if (gamepad1.dpad_up && !gamepad1.dpad_down) {
+        if ((gamepad1.dpad_up && !gamepad1.dpad_down) || (gamepad2.dpad_up && !(gamepad2.dpad_down))) {
             liftState = 2;
-        } else if (gamepad1.dpad_down && !gamepad1.dpad_up) {
+        } else if ((gamepad1.dpad_down && !gamepad1.dpad_up) || (gamepad2.dpad_down && !(gamepad2.dpad_up)))  {
             liftState = 1;
         }
 
