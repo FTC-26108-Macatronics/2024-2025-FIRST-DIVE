@@ -133,7 +133,6 @@ public class RobotHardware {
     }
 
     public void moveArm(double rotation, boolean override) {
-        armMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         if (((rotation > 0 && getArm() < MAX_ARM) || (rotation < 0 && getArm() > MIN_ARM)) || override) {
             targetArm += rotation;
         }
@@ -155,20 +154,6 @@ public class RobotHardware {
     }
 
     public void rotateClaw(int state, boolean override) {
-        double pwr = 0;
-
-        if (state == 2 && (getClaw() < MAX_CLAW || override)) {
-            pwr = PWR_CLAW;
-        }
-        if (state == 1 && (getClaw() > MIN_CLAW || override)) {
-            pwr = -PWR_CLAW;
-        }
-
-        setClaw(pwr);
-    }
-
-    public double rotateClawPID(int state, boolean override) {
-        clawMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         if (state == 2 && (getClaw() < MAX_CLAW || override)) {
             targetClaw += PWR_CLAW;
         }
@@ -179,28 +164,9 @@ public class RobotHardware {
         double error = targetClaw - getClaw();
         iClaw += error * timerClaw.seconds();
 
-        setClaw((K_P_CLAW * error) + (K_I_CLAW * iArm) + (K_D_CLAW * ((error - lastErrorClaw) / timerArm.seconds())));
+        setClaw((K_P_CLAW * error) + (K_I_CLAW * iArm) + (K_D_CLAW * ((error - lastErrorClaw) / timerClaw.seconds())));
 
         lastErrorClaw = error;
         timerClaw.reset();
-        return error;
-    }
-
-    public void moveClaw(boolean state) {
-        if (state) {
-            clawServo.setPosition(SERVO_OPEN);
-        } else {
-            clawServo.setPosition(SERVO_CLOSED);
-        }
-    }
-
-    public void lock (){
-        //armMotor.setPower(1.0);
-        clawMotor.setPower(1.0);
-        //armMotor.setTargetPosition(getArm());
-
-        //armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        clawMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        clawMotor.setTargetPosition(getClaw());
     }
 }
