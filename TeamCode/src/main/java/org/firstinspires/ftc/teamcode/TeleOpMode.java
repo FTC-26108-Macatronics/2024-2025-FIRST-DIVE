@@ -52,7 +52,8 @@ public class TeleOpMode extends OpMode {
         robot.strafe(strafe);
         robot.moveLift(liftState, override);
         robot.moveArm(arm, override);
-        robot.rotateClaw(clawRState, override);
+        //robot.rotateClaw(clawRState, override);
+        telemetry.addData("Claw error", robot.rotateClawPID(clawRState, override));
         robot.moveClaw(clawState);
 
         telemetry.update();

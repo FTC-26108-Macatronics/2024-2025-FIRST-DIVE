@@ -6,10 +6,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class RobotHardware {
-    ElapsedTime timer = new ElapsedTime();
-    public static final double MAX_PWR_DT = 1, PWR_LIFT = 1, K_P = 0.05, K_I = 0.003, K_D = 0.003, PWR_CLAW = 0.3, SERVO_OPEN = 0.4, SERVO_CLOSED = 0.7;
+    ElapsedTime timerArm = new ElapsedTime();
+    ElapsedTime timerClaw = new ElapsedTime();
+    public static final double MAX_PWR_DT = 1, PWR_LIFT = 1, K_P_ARM = 0.05, K_I_ARM = 0.003, K_D_ARM = 0.003, PWR_CLAW = 1.0, SERVO_OPEN = 0.4, SERVO_CLOSED = 0.7;
+    public static final double K_P_CLAW = 0.1, K_I_CLAW = 0, K_D_CLAW = 0;
     public static final int MAX_LIFT = 8400, MIN_LIFT = 0, MAX_ARM = 420, MIN_ARM = 0, MAX_CLAW = 0, MIN_CLAW = -180;
-    public static double target, i, lastError;
+    public static double targetArm, iArm, lastErrorArm;
+    public static double targetClaw, iClaw, lastErrorClaw;
     private final OpMode myOpMode;
     private DcMotorEx leftDrive = null;
     private DcMotorEx rightDrive = null;
@@ -24,9 +27,9 @@ public class RobotHardware {
     }
 
     public void init() {
-        target = 0;
-        i = 0;
-        lastError = 0;
+        targetArm = 0;
+        iArm = 0;
+        lastErrorArm = 0;
 
         myOpMode.telemetry.addData(">", "Initializing");
         myOpMode.telemetry.update();
@@ -127,15 +130,15 @@ public class RobotHardware {
 
     public void moveArm(double rotation, boolean override) {
         if (((rotation > 0 && getArm() < MAX_ARM) || (rotation < 0 && getArm() > MIN_ARM)) || override) {
-            target += rotation;
+            targetArm += rotation;
         }
-        double error = target - getArm();
-        i += error * timer.seconds();
+        double error = targetArm - getArm();
+        iArm += error * timerArm.seconds();
 
-        setArm((K_P * error) + (K_I * i) + (K_D * ((error - lastError) / timer.seconds())));
+        setArm((K_P_ARM * error) + (K_I_ARM * iArm) + (K_D_ARM * ((error - lastErrorArm) / timerArm.seconds())));
 
-        lastError = error;
-        timer.reset();
+        lastErrorArm = error;
+        timerArm.reset();
     }
 
     public int getClaw() {
@@ -157,6 +160,24 @@ public class RobotHardware {
         }
 
         setClaw(pwr);
+    }
+
+    public double rotateClawPID(int state, boolean override) {
+        if (state == 2 && (getClaw() < MAX_CLAW || override)) {
+            targetClaw += PWR_CLAW;
+        }
+        if (state == 1 && (getClaw() > MIN_CLAW || override)) {
+            targetClaw -= PWR_CLAW;
+        }
+
+        double error = targetClaw - getClaw();
+        iClaw += error * timerClaw.seconds();
+
+        setClaw((K_P_CLAW * error) + (K_I_CLAW * iArm) + (K_D_CLAW * ((error - lastErrorClaw) / timerArm.seconds())));
+
+        lastErrorClaw = error;
+        timerClaw.reset();
+        return error;
     }
 
     public void moveClaw(boolean state) {
