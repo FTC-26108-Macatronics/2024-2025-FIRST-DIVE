@@ -6,24 +6,28 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class RobotHardware {
-    public static final double MAX_PWR_DT = 1, PWR_LIFT = 1, K_P_ARM = 0.05, K_I_ARM = 0.003, K_D_ARM = 0.003, PWR_CLAW = 1.0, SERVO_OPEN = 0.4, SERVO_CLOSED = 0.7;
+    public static final double MAX_PWR_DT = 0.5, PWR_LIFT = 1, K_P_ARM = 0.05, K_I_ARM = 0.003, K_D_ARM = 0.003, PWR_CLAW = 1.0, SERVO_OPEN = 0.4, SERVO_CLOSED = 0.7;
     public static final double K_P_CLAW = 0.1, K_I_CLAW = 0, K_D_CLAW = 0;
     public static final int MAX_LIFT = 8400, MIN_LIFT = 0, MAX_ARM = 420, MIN_ARM = 0, MAX_CLAW = 0, MIN_CLAW = -180;
     public static double targetArm, iArm, lastErrorArm;
     public static double targetClaw, iClaw, lastErrorClaw;
     private final OpMode myOpMode;
-    public DcMotorEx clawMotor = null;
+    private final ElapsedTime runtime = new ElapsedTime();
     ElapsedTime timerArm = new ElapsedTime();
     ElapsedTime timerClaw = new ElapsedTime();
+    private DcMotorEx clawMotor = null;
     private DcMotorEx leftDrive = null;
     private DcMotorEx rightDrive = null;
     private DcMotorEx transverseDrive = null;
     private DcMotorEx liftMotor = null;
     private DcMotorEx armMotor = null;
     private Servo clawServo = null;
-
     public RobotHardware(OpMode opmode) {
         myOpMode = opmode;
+    }
+
+    public double getDT() {
+        return leftDrive.getCurrentPosition();
     }
 
     public void init() {
@@ -78,6 +82,14 @@ public class RobotHardware {
 
         myOpMode.telemetry.addData(">", "Initialized");
         myOpMode.telemetry.update();
+    }
+
+    public int getL() {
+        return leftDrive.getCurrentPosition();
+    }
+
+    public int getR() {
+        return rightDrive.getCurrentPosition();
     }
 
     public void setDrivePower(double left, double right) {
@@ -179,4 +191,8 @@ public class RobotHardware {
             clawServo.setPosition(SERVO_CLOSED);
         }
     }
+
+
+
+
 }

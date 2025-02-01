@@ -25,6 +25,7 @@ public class TeleOpMode extends OpMode {
         }
 
         double drive = -gamepad1.left_stick_y;
+        //double turn = gamepad1.right_stick_x;
         double turn = gamepad1.right_stick_x;
         double strafe = -gamepad1.left_stick_x;
         double arm = gamepad1.left_trigger - gamepad1.right_trigger;
@@ -54,7 +55,6 @@ public class TeleOpMode extends OpMode {
         robot.moveArm(arm, override);
         robot.rotateClaw(clawRState, override);
         robot.moveClaw(clawState);
-
         telemetry.update();
     }
 }
