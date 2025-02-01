@@ -1,26 +1,25 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class RobotHardware {
-    ElapsedTime timerArm = new ElapsedTime();
-    ElapsedTime timerClaw = new ElapsedTime();
     public static final double MAX_PWR_DT = 1, PWR_LIFT = 1, K_P_ARM = 0.05, K_I_ARM = 0.003, K_D_ARM = 0.003, PWR_CLAW = 1.0, SERVO_OPEN = 0.4, SERVO_CLOSED = 0.7;
     public static final double K_P_CLAW = 0.1, K_I_CLAW = 0, K_D_CLAW = 0;
     public static final int MAX_LIFT = 8400, MIN_LIFT = 0, MAX_ARM = 420, MIN_ARM = 0, MAX_CLAW = 0, MIN_CLAW = -180;
     public static double targetArm, iArm, lastErrorArm;
     public static double targetClaw, iClaw, lastErrorClaw;
     private final OpMode myOpMode;
+    public DcMotorEx clawMotor = null;
+    ElapsedTime timerArm = new ElapsedTime();
+    ElapsedTime timerClaw = new ElapsedTime();
     private DcMotorEx leftDrive = null;
     private DcMotorEx rightDrive = null;
     private DcMotorEx transverseDrive = null;
     private DcMotorEx liftMotor = null;
     private DcMotorEx armMotor = null;
-    public DcMotorEx clawMotor = null;
     private Servo clawServo = null;
 
     public RobotHardware(OpMode opmode) {
@@ -117,6 +116,7 @@ public class RobotHardware {
         if (state == 2 && (getLift() < MAX_LIFT || override)) {
             pwr = PWR_LIFT;
         }
+
         if (state == 1 && (getLift() > MIN_LIFT || override)) {
             pwr = -PWR_LIFT;
         }
@@ -136,6 +136,7 @@ public class RobotHardware {
         if (((rotation > 0 && getArm() < MAX_ARM) || (rotation < 0 && getArm() > MIN_ARM)) || override) {
             targetArm += rotation;
         }
+
         double error = targetArm - getArm();
         iArm += error * timerArm.seconds();
 
@@ -157,6 +158,7 @@ public class RobotHardware {
         if (state == 2 && (getClaw() < MAX_CLAW || override)) {
             targetClaw += PWR_CLAW;
         }
+
         if (state == 1 && (getClaw() > MIN_CLAW || override)) {
             targetClaw -= PWR_CLAW;
         }
@@ -164,9 +166,17 @@ public class RobotHardware {
         double error = targetClaw - getClaw();
         iClaw += error * timerClaw.seconds();
 
-        setClaw((K_P_CLAW * error) + (K_I_CLAW * iArm) + (K_D_CLAW * ((error - lastErrorClaw) / timerClaw.seconds())));
+        setClaw((K_P_CLAW * error) + (K_I_CLAW * iClaw) + (K_D_CLAW * ((error - lastErrorClaw) / timerClaw.seconds())));
 
         lastErrorClaw = error;
         timerClaw.reset();
+    }
+
+    public void moveClaw(boolean state) {
+        if (state) {
+            clawServo.setPosition(SERVO_OPEN);
+        } else {
+            clawServo.setPosition(SERVO_CLOSED);
+        }
     }
 }
