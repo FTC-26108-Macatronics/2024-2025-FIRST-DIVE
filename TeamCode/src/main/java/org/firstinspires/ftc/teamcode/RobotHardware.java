@@ -12,7 +12,6 @@ public class RobotHardware {
     public static double targetArm, iArm, lastErrorArm;
     public static double targetClaw, iClaw, lastErrorClaw;
     private final OpMode myOpMode;
-    private final ElapsedTime runtime = new ElapsedTime();
     ElapsedTime timerArm = new ElapsedTime();
     ElapsedTime timerClaw = new ElapsedTime();
     private DcMotorEx clawMotor = null;
@@ -26,9 +25,6 @@ public class RobotHardware {
         myOpMode = opmode;
     }
 
-    public double getDT() {
-        return leftDrive.getCurrentPosition();
-    }
 
     public void init() {
         targetArm = 0;
@@ -82,14 +78,6 @@ public class RobotHardware {
 
         myOpMode.telemetry.addData(">", "Initialized");
         myOpMode.telemetry.update();
-    }
-
-    public int getL() {
-        return leftDrive.getCurrentPosition();
-    }
-
-    public int getR() {
-        return rightDrive.getCurrentPosition();
     }
 
     public void setDrivePower(double left, double right) {
