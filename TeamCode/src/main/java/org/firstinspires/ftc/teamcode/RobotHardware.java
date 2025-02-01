@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -19,7 +20,7 @@ public class RobotHardware {
     private DcMotorEx transverseDrive = null;
     private DcMotorEx liftMotor = null;
     private DcMotorEx armMotor = null;
-    private DcMotorEx clawMotor = null;
+    public DcMotorEx clawMotor = null;
     private Servo clawServo = null;
 
     public RobotHardware(OpMode opmode) {
@@ -30,6 +31,9 @@ public class RobotHardware {
         targetArm = 0;
         iArm = 0;
         lastErrorArm = 0;
+        targetClaw = 0;
+        iClaw = 0;
+        lastErrorClaw = 0;
 
         myOpMode.telemetry.addData(">", "Initializing");
         myOpMode.telemetry.update();
@@ -129,6 +133,7 @@ public class RobotHardware {
     }
 
     public void moveArm(double rotation, boolean override) {
+        armMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         if (((rotation > 0 && getArm() < MAX_ARM) || (rotation < 0 && getArm() > MIN_ARM)) || override) {
             targetArm += rotation;
         }
@@ -163,6 +168,7 @@ public class RobotHardware {
     }
 
     public double rotateClawPID(int state, boolean override) {
+        clawMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         if (state == 2 && (getClaw() < MAX_CLAW || override)) {
             targetClaw += PWR_CLAW;
         }
@@ -186,5 +192,15 @@ public class RobotHardware {
         } else {
             clawServo.setPosition(SERVO_CLOSED);
         }
+    }
+
+    public void lock (){
+        //armMotor.setPower(1.0);
+        clawMotor.setPower(1.0);
+        //armMotor.setTargetPosition(getArm());
+
+        //armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        clawMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        clawMotor.setTargetPosition(getClaw());
     }
 }

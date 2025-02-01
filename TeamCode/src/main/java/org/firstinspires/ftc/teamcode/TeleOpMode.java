@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp
 public class TeleOpMode extends OpMode {
     RobotHardware robot = new RobotHardware(this);
-    boolean clawState;
+    boolean clawState, lock;
 
     @Override
     public void init() {
@@ -22,6 +22,10 @@ public class TeleOpMode extends OpMode {
         if (gamepad1.options) {
             override = true;
             telemetry.addData("!OVERRIDE", "ACTIVE!");
+        }
+
+        if (gamepad1.back) {
+            lock = !lock;
         }
 
         double drive = -gamepad1.left_stick_y;
@@ -48,14 +52,25 @@ public class TeleOpMode extends OpMode {
             clawState = false;
         }
 
+
+
         robot.driveArcade(drive, turn);
         robot.strafe(strafe);
         robot.moveLift(liftState, override);
-        robot.moveArm(arm, override);
-        //robot.rotateClaw(clawRState, override);
-        telemetry.addData("Claw error", robot.rotateClawPID(clawRState, override));
-        robot.moveClaw(clawState);
 
+        //robot.rotateClaw(clawRState, override);
+
+        if (lock){
+            robot.lock();
+            telemetry.addData("!LOCK", "ACTIVE!");
+        } else {
+            telemetry.addData("Claw error", robot.rotateClawPID(clawRState, override));
+
+        }
+        robot.moveArm(arm, override);
+        telemetry.addData("Claw mode", robot.clawMotor.getMode());
+        telemetry.addData("Claw target", robot.clawMotor.getTargetPosition());
+        telemetry.addData("Claw power", robot.clawMotor.getPower());
         telemetry.update();
     }
 }
