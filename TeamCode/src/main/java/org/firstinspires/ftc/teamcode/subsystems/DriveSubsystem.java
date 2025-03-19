@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.MAX_PWR_DT;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
@@ -9,6 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Gamepad;
+
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 
 public class DriveSubsystem extends SubsystemBase {
@@ -59,7 +62,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
+        telemetry.addData("Motor Velocity", leftDrive.getVelocity());
+        telemetry.addData("Motor Current", leftDrive.getCurrent(CurrentUnit.MILLIAMPS));
     }
 
 }
