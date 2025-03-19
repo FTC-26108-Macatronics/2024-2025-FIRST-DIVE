@@ -12,9 +12,9 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class DriveSubsystem extends SubsystemBase {
 
-    private final DcMotorEx leftDrive;
-    private final DcMotorEx rightDrive;
-    private final DcMotorEx transverseDrive;
+    public final DcMotorEx leftDrive;
+    public final DcMotorEx rightDrive;
+    public final DcMotorEx transverseDrive;
 
     public DriveSubsystem(final HardwareMap hMap) {
         leftDrive = hMap.get(DcMotorEx.class, "leftDrive");
@@ -58,11 +58,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        double drive = -gamepad1.left_stick_y;
-        double turn = gamepad1.right_stick_x;
-        double strafe = -gamepad1.left_stick_x;
-
-        drive(drive, turn, strafe);
 
     }
 
