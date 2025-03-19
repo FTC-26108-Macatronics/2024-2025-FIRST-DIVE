@@ -56,5 +56,7 @@ public class TeleOpMode extends OpMode {
         robot.moveClaw(clawState);
 
         telemetry.update();
+
+
     }
 }
