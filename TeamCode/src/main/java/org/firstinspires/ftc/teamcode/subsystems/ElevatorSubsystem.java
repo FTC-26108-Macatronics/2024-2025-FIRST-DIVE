@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gam
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -15,8 +16,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private final DcMotorEx liftMotor;
 
-    public ElevatorSubsystem(final HardwareMap hMap) {
-        liftMotor = hMap.get(DcMotorEx.class, "lift");
+    public ElevatorSubsystem(final OpMode opMode) {
+        liftMotor = opMode.hardwareMap.get(DcMotorEx.class, "lift");
         liftMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         liftMotor.setDirection(DcMotorEx.Direction.FORWARD);
@@ -48,22 +49,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        int liftState = 0;
-        boolean override = false;
-
-        if (gamepad1.options) {
-            override = true;
-            telemetry.addData("!OVERRIDE", "ACTIVE!");
-        }
-
-        if ((gamepad1.dpad_up && !gamepad1.dpad_down) || (gamepad2.dpad_up && !(gamepad2.dpad_down))) {
-            liftState = 2;
-        } else if ((gamepad1.dpad_down && !gamepad1.dpad_up) || (gamepad2.dpad_down && !(gamepad2.dpad_up)))  {
-            liftState = 1;
-        }
-
-        moveLift(liftState, override);
-
     }
 
 }

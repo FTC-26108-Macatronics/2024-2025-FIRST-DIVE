@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.tel
 import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.MAX_PWR_DT;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -29,9 +30,9 @@ public class ClawSubsystem extends SubsystemBase {
 
 
 
-    public ClawSubsystem(final HardwareMap hMap) {
-        clawMotor = hMap.get(DcMotorEx.class, "claw_motor");
-        clawServo = hMap.get(Servo.class, "claw_servo");
+    public ClawSubsystem(final OpMode opMode) {
+        clawMotor = opMode.hardwareMap.get(DcMotorEx.class, "claw_motor");
+        clawServo = opMode.hardwareMap.get(Servo.class, "claw_servo");
 
         clawMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         clawMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -87,29 +88,6 @@ public class ClawSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        boolean override = false;
-
-        if (gamepad1.options) {
-            override = true;
-            telemetry.addData("!OVERRIDE", "ACTIVE!");
-        }
-
-        int clawRState = 0;
-
-        if (gamepad1.y && !gamepad1.a) {
-            clawRState = 2;
-        } else if (gamepad1.a && !gamepad1.y) {
-            clawRState = 1;
-        }
-
-        if (gamepad1.left_bumper && !gamepad1.right_bumper) {
-            clawState = true;
-        } else if (gamepad1.right_bumper && !gamepad1.left_bumper) {
-            clawState = false;
-        }
-
-        rotateClaw(clawRState, override);
-        moveClaw(clawState);
 
     }
 

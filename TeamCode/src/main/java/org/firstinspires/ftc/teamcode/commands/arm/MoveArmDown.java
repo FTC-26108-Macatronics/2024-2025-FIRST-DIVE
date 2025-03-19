@@ -6,15 +6,14 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.tel
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
-public class MoveArm extends CommandBase {
+public class MoveArmDown extends CommandBase {
 
     private boolean override;
 
     private ArmSubsystem m_armSubsystem;
 
-    public MoveArm(ArmSubsystem m_armSubsystem) {
+    public MoveArmDown(ArmSubsystem m_armSubsystem) {
         this.m_armSubsystem = m_armSubsystem;
         addRequirements();
 
@@ -34,7 +33,7 @@ public class MoveArm extends CommandBase {
             telemetry.addData("!OVERRIDE", "ACTIVE!");
         }
 
-        double arm = gamepad1.left_trigger - gamepad1.right_trigger;
+        double arm = -gamepad1.left_trigger;
         m_armSubsystem.moveArm(arm, override);
 
     }

@@ -1,61 +1,60 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.button.Button;
+import com.arcrobotics.ftclib.command.button.GamepadButton;
+import com.arcrobotics.ftclib.command.button.Trigger;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.commands.arm.MoveClaw;
+import org.firstinspires.ftc.teamcode.commands.drive.DriveCommand;
+import org.firstinspires.ftc.teamcode.commands.elevator.MoveElevator;
+import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.ElevatorSubsystem;
+
 @TeleOp
 public class TeleOpMode extends OpMode {
-    RobotHardware robot = new RobotHardware(this);
-    boolean clawState;
+    public static DriveSubsystem m_driveSubsystem;
+    public static ArmSubsystem m_armSubsystem;
+    public static ClawSubsystem m_clawSubsystem;
+    public static ElevatorSubsystem m_elevatorSubsystem;
+    public static CommandScheduler commandScheduler;
+    public static GamepadEx m_driverController;
+    public static GamepadEx m_operatorController;
+    public static Button openClaw;
+    public static Button moveElevatorUp;
+    public static Button moveElevatorDown;
+    public static Button moveArmUp;
+    public static Button moveArmDown;
 
     @Override
     public void init() {
-        robot.init();
+        m_driveSubsystem = new DriveSubsystem(this);
+        m_armSubsystem = new ArmSubsystem(this);
+        m_clawSubsystem = new ClawSubsystem(this);
+        m_elevatorSubsystem = new ElevatorSubsystem(this);
+        commandScheduler = CommandScheduler.getInstance();
+
+        m_driveSubsystem.setDefaultCommand(new DriveCommand(m_driveSubsystem));
+
+        m_driverController = new GamepadEx(gamepad1);
+        m_operatorController = new GamepadEx(gamepad2);
+
+        openClaw = new GamepadButton(m_operatorController, GamepadKeys.Button.LEFT_BUMPER);
+        moveElevatorUp = new GamepadButton(m_operatorController, GamepadKeys.Button.DPAD_UP);
+        moveElevatorDown = new GamepadButton(m_operatorController, GamepadKeys.Button.DPAD_DOWN);
     }
 
     @Override
     public void loop() {
-        telemetry.addData(">", "OpMode active");
-
-        boolean override = false;
-
-        if (gamepad1.options) {
-            override = true;
-            telemetry.addData("!OVERRIDE", "ACTIVE!");
-        }
-
-        double drive = -gamepad1.left_stick_y;
-        double turn = gamepad1.right_stick_x;
-        double strafe = -gamepad1.left_stick_x;
-        double arm = gamepad1.left_trigger - gamepad1.right_trigger;
-        int liftState = 0, clawRState = 0;
-
-        if ((gamepad1.dpad_up && !gamepad1.dpad_down) || (gamepad2.dpad_up && !(gamepad2.dpad_down))) {
-            liftState = 2;
-        } else if ((gamepad1.dpad_down && !gamepad1.dpad_up) || (gamepad2.dpad_down && !(gamepad2.dpad_up)))  {
-            liftState = 1;
-        }
-
-        if (gamepad1.y && !gamepad1.a) {
-            clawRState = 2;
-        } else if (gamepad1.a && !gamepad1.y) {
-            clawRState = 1;
-        }
-
-        if (gamepad1.left_bumper && !gamepad1.right_bumper) {
-            clawState = true;
-        } else if (gamepad1.right_bumper && !gamepad1.left_bumper) {
-            clawState = false;
-        }
-
-        robot.driveArcade(drive, turn);
-        robot.strafe(strafe);
-        robot.moveLift(liftState, override);
-        robot.moveArm(arm, override);
-        robot.rotateClaw(clawRState, override);
-        robot.moveClaw(clawState);
-
-        telemetry.update();
+        openClaw.whileHeld(new MoveClaw(m_clawSubsystem));
+        moveElevatorDown.whileHeld(new MoveElevator(m_elevatorSubsystem));
+        moveElevatorUp.whileHeld(new MoveElevator(m_elevatorSubsystem));
 
 
     }

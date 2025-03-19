@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gam
 import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.MAX_PWR_DT;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -16,10 +17,10 @@ public class DriveSubsystem extends SubsystemBase {
     public final DcMotorEx rightDrive;
     public final DcMotorEx transverseDrive;
 
-    public DriveSubsystem(final HardwareMap hMap) {
-        leftDrive = hMap.get(DcMotorEx.class, "leftDrive");
-        rightDrive = hMap.get(DcMotorEx.class, "rightDrive");
-        transverseDrive = hMap.get(DcMotorEx.class, "transverseDrive");
+    public DriveSubsystem(final OpMode opMode) {
+        leftDrive = opMode.hardwareMap.get(DcMotorEx.class, "leftDrive");
+        rightDrive = opMode.hardwareMap.get(DcMotorEx.class, "rightDrive");
+        transverseDrive = opMode.hardwareMap.get(DcMotorEx.class, "transverseDrive");
 
         leftDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);

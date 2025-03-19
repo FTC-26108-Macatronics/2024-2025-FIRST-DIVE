@@ -8,7 +8,7 @@ import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.ElevatorSubsystem;
 
-class MoveElevator extends CommandBase {
+public class MoveElevator extends CommandBase {
 
     private boolean override;
 
@@ -50,7 +50,7 @@ class MoveElevator extends CommandBase {
     @Override
     public void end(boolean interrupted) {
 
-        m_elevatorSubsystem.moveLift(0, false);
+        m_elevatorSubsystem.setLift(0);
     }
 
     @Override

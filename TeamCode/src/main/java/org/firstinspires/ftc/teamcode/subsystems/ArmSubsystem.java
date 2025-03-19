@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -19,8 +20,8 @@ public class ArmSubsystem extends SubsystemBase {
     private double iArm;
     private ElapsedTime timerArm;
 
-    public ArmSubsystem(final HardwareMap hMap) {
-        armMotor = hMap.get(DcMotorEx.class, "arm");
+    public ArmSubsystem(final OpMode opMode) {
+        armMotor = opMode.hardwareMap.get(DcMotorEx.class, "arm");
         armMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         armMotor.setDirection(DcMotorEx.Direction.FORWARD);
@@ -58,15 +59,6 @@ public class ArmSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        boolean override = false;
-
-        if (gamepad1.options) {
-            override = true;
-            telemetry.addData("!OVERRIDE", "ACTIVE!");
-        }
-
-        double arm = gamepad1.left_trigger - gamepad1.right_trigger;
-        moveArm(arm, override);
 
     }
 
