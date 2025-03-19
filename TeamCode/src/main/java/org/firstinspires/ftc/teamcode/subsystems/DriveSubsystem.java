@@ -41,12 +41,7 @@ public class DriveSubsystem extends SubsystemBase {
         rightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         transverseDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
     }
-
-    public void setDrivePower(double left, double right) {
-        leftDrive.setPower(left);
-        rightDrive.setPower(right);
-    }
-    public void driveArcade(double drive, double turn) {
+    public void drive(double drive, double turn, double strafe) {
         double leftPwr = drive + turn;
         double rightPwr = drive - turn;
         double max = Math.max(Math.abs(leftPwr), Math.abs(rightPwr));
@@ -56,13 +51,10 @@ public class DriveSubsystem extends SubsystemBase {
             rightPwr /= max;
         }
 
-        setDrivePower(leftPwr, rightPwr);
+        leftDrive.setPower(leftPwr);
+        rightDrive.setPower(rightPwr);
+        transverseDrive.setPower(strafe);
     }
-
-    public void strafe(double pwr) {
-        transverseDrive.setPower(pwr);
-    }
-
 
     @Override
     public void periodic() {
@@ -70,8 +62,7 @@ public class DriveSubsystem extends SubsystemBase {
         double turn = gamepad1.right_stick_x;
         double strafe = -gamepad1.left_stick_x;
 
-        driveArcade(drive, turn);
-        strafe(strafe);
+        drive(drive, turn, strafe);
 
     }
 
