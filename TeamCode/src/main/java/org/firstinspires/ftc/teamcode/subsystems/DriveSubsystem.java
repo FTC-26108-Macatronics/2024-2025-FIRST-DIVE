@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.tel
 import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.MAX_PWR_DT;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,6 +13,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.Constants;
 
 
 public class DriveSubsystem extends SubsystemBase {
@@ -19,6 +21,14 @@ public class DriveSubsystem extends SubsystemBase {
     public final DcMotorEx leftDrive;
     public final DcMotorEx rightDrive;
     public final DcMotorEx transverseDrive;
+    public final PIDController driveController;
+    public final PIDController turnController;
+    public final PIDController strafeController;
+
+    public double driveSetpoint = 0;
+    public double turnSetpoint = 0;
+    public double strafeSetpoint = 0;
+
 
     public DriveSubsystem(final OpMode opMode) {
         leftDrive = opMode.hardwareMap.get(DcMotorEx.class, "leftDrive");
@@ -44,6 +54,18 @@ public class DriveSubsystem extends SubsystemBase {
         leftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         transverseDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        driveController = new PIDController(Constants.DriveConstants.K_P_DRIVE, Constants.DriveConstants.K_I_DRIVE, Constants.DriveConstants.K_D_DRIVE);
+        driveController.setSetPoint(Constants.AutoConstants.DRIVE_SETPOINT);
+        driveController.clearTotalError();
+
+        turnController = new PIDController(Constants.DriveConstants.K_P_TURN, Constants.DriveConstants.K_I_TURN, Constants.DriveConstants.K_D_TURN);
+        turnController.setSetPoint(Constants.AutoConstants.DRIVE_SETPOINT);
+        turnController.clearTotalError();
+
+        strafeController = new PIDController(Constants.DriveConstants.K_P_STRAFE, Constants.DriveConstants.K_I_STRAFE, Constants.DriveConstants.K_D_STRAFE);
+        strafeController.setSetPoint(Constants.AutoConstants.DRIVE_SETPOINT);
+        strafeController.clearTotalError();
     }
     public void drive(double drive, double turn, double strafe) {
         double leftPwr = drive + turn;
@@ -59,6 +81,12 @@ public class DriveSubsystem extends SubsystemBase {
         rightDrive.setPower(rightPwr);
         transverseDrive.setPower(strafe);
     }
+
+
+    public void setDriveSetpoint(double setpoint) {
+        driveController.setSetPoint(setpoint);
+    }
+
 
     @Override
     public void periodic() {

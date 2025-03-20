@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
@@ -9,6 +10,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.arm.MoveArmDown;
 import org.firstinspires.ftc.teamcode.commands.arm.MoveArmUp;
 import org.firstinspires.ftc.teamcode.commands.arm.MoveClaw;
@@ -21,7 +23,10 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ElevatorSubsystem;
 
 @TeleOp
-public class TeleOpMode extends OpMode {
+public class RobotContainer extends OpMode {
+
+    public FtcDashboard dashboard;
+    public static Telemetry dashboardTelemetry;
     public static DriveSubsystem m_driveSubsystem;
     public static ArmSubsystem m_armSubsystem;
     public static ClawSubsystem m_clawSubsystem;
@@ -38,6 +43,10 @@ public class TeleOpMode extends OpMode {
 
     @Override
     public void init() {
+
+        dashboard = FtcDashboard.getInstance();
+        dashboardTelemetry = dashboard.getTelemetry();
+
         m_driveSubsystem = new DriveSubsystem(this);
         m_armSubsystem = new ArmSubsystem(this);
         m_clawSubsystem = new ClawSubsystem(this);
