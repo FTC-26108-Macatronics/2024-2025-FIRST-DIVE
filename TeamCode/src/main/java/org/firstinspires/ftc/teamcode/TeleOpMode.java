@@ -9,9 +9,12 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.commands.arm.MoveArmDown;
+import org.firstinspires.ftc.teamcode.commands.arm.MoveArmUp;
 import org.firstinspires.ftc.teamcode.commands.arm.MoveClaw;
 import org.firstinspires.ftc.teamcode.commands.drive.DriveCommand;
 import org.firstinspires.ftc.teamcode.commands.elevator.MoveElevator;
+import org.firstinspires.ftc.teamcode.controls.Controller;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
@@ -29,8 +32,9 @@ public class TeleOpMode extends OpMode {
     public static Button openClaw;
     public static Button moveElevatorUp;
     public static Button moveElevatorDown;
-    public static Button moveArmUp;
-    public static Button moveArmDown;
+    public static Trigger moveArmUp;
+    public static Trigger moveArmDown;
+
 
     @Override
     public void init() {
@@ -48,6 +52,10 @@ public class TeleOpMode extends OpMode {
         openClaw = new GamepadButton(m_operatorController, GamepadKeys.Button.LEFT_BUMPER);
         moveElevatorUp = new GamepadButton(m_operatorController, GamepadKeys.Button.DPAD_UP);
         moveElevatorDown = new GamepadButton(m_operatorController, GamepadKeys.Button.DPAD_DOWN);
+
+        moveArmUp = new Trigger(Controller::getRightTrigger);
+        moveArmDown = new Trigger(Controller::getLeftTrigger);
+
     }
 
     @Override
@@ -55,7 +63,11 @@ public class TeleOpMode extends OpMode {
         openClaw.whileHeld(new MoveClaw(m_clawSubsystem));
         moveElevatorDown.whileHeld(new MoveElevator(m_elevatorSubsystem));
         moveElevatorUp.whileHeld(new MoveElevator(m_elevatorSubsystem));
-
-
+        moveArmUp.whileActiveContinuous(new MoveArmUp(m_armSubsystem));
+        moveArmDown.whileActiveContinuous(new MoveArmDown(m_armSubsystem));
     }
+    public boolean rightTriggerPressed() {
+        return gamepad1.right_trigger > 0.3;
+    }
+
 }
