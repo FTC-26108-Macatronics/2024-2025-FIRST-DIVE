@@ -49,10 +49,6 @@ public class DriveSubsystem extends SubsystemBase {
         rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         transverseDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        transverseDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-
         leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         transverseDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -105,11 +101,27 @@ public class DriveSubsystem extends SubsystemBase {
         driveController.setSetPoint(setpoint);
     }
 
+    public double getDriveEncoderReading() {
+        return rightDrive.getCurrentPosition();
+    }
+
+    public double getStrafeEncoderReading() {
+        return transverseDrive.getCurrentPosition();
+    }
+
+    public void resetEncoders() {
+        leftDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        transverseDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
 
     @Override
     public void periodic() {
         telemetry.addData("Motor Velocity", leftDrive.getVelocity());
         telemetry.addData("Motor Current", leftDrive.getCurrent(CurrentUnit.MILLIAMPS));
+        telemetry.addData("Current rotation", getRotation());
+        telemetry.addData("Angular velocity", getAngularVelocity());
     }
 
 }
