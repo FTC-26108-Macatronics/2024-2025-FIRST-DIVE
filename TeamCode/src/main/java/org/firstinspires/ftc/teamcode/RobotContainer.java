@@ -11,11 +11,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.arm.MoveArmDown;
-import org.firstinspires.ftc.teamcode.commands.arm.MoveArmUp;
-import org.firstinspires.ftc.teamcode.commands.arm.MoveClaw;
-import org.firstinspires.ftc.teamcode.commands.drive.DriveCommand;
-import org.firstinspires.ftc.teamcode.commands.elevator.MoveElevator;
+import org.firstinspires.ftc.teamcode.commands.teleop.arm.MoveArmDown;
+import org.firstinspires.ftc.teamcode.commands.teleop.arm.MoveArmUp;
+import org.firstinspires.ftc.teamcode.commands.teleop.claw.MoveClaw;
+import org.firstinspires.ftc.teamcode.commands.teleop.drive.DriveCommand;
+import org.firstinspires.ftc.teamcode.commands.teleop.elevator.MoveElevator;
 import org.firstinspires.ftc.teamcode.controls.Controller;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;

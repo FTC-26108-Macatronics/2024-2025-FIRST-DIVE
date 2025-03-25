@@ -1,17 +1,17 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.teamcode.Constants.DriveConstants.MAX_PWR_DT;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Constants;
 
@@ -25,6 +25,8 @@ public class DriveSubsystem extends SubsystemBase {
     public final PIDController turnController;
     public final PIDController strafeController;
 
+    public final IMU imu;
+
     public double driveSetpoint = 0;
     public double turnSetpoint = 0;
     public double strafeSetpoint = 0;
@@ -34,6 +36,14 @@ public class DriveSubsystem extends SubsystemBase {
         leftDrive = opMode.hardwareMap.get(DcMotorEx.class, "leftDrive");
         rightDrive = opMode.hardwareMap.get(DcMotorEx.class, "rightDrive");
         transverseDrive = opMode.hardwareMap.get(DcMotorEx.class, "transverseDrive");
+        imu = opMode.hardwareMap.get(IMU.class, "imu");
+
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.DOWN;
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
+        imu.resetYaw();
 
         leftDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -82,7 +92,15 @@ public class DriveSubsystem extends SubsystemBase {
         transverseDrive.setPower(strafe);
     }
 
-
+    public void resetGyro() {
+        imu.resetYaw();
+    }
+    public double getAngularVelocity() {
+        return imu.getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate;
+    }
+    public double getRotation() {
+        return imu.getRobotYawPitchRollAngles().getYaw();
+    }
     public void setDriveSetpoint(double setpoint) {
         driveController.setSetPoint(setpoint);
     }
