@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.commands.auto.drive;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.controller.PIDController;
 
-import org.firstinspires.ftc.teamcode.RobotContainer;
+import org.firstinspires.ftc.teamcode.Robot;
 
 public class DriveToSetpoint extends CommandBase {
 
@@ -20,11 +20,11 @@ public class DriveToSetpoint extends CommandBase {
 
     @Override
     public void initialize() {
-        RobotContainer.m_driveSubsystem.resetGyro();
-        RobotContainer.m_driveSubsystem.resetEncoders();
+        Robot.m_driveSubsystem.resetGyro();
+        Robot.m_driveSubsystem.resetEncoders();
 
-        driveController = RobotContainer.m_driveSubsystem.driveController;
-        strafeController = RobotContainer.m_driveSubsystem.strafeController;
+        driveController = Robot.m_driveSubsystem.driveController;
+        strafeController = Robot.m_driveSubsystem.strafeController;
 
         driveController.setSetPoint(driveSetpoint);
         strafeController.setSetPoint(strafeSetpoint);
@@ -32,8 +32,8 @@ public class DriveToSetpoint extends CommandBase {
 
     @Override
     public void execute() {
-        double drivePower = driveController.calculate(RobotContainer.m_driveSubsystem.getDriveEncoderReading());
-        double strafePower = strafeController.calculate(RobotContainer.m_driveSubsystem.getStrafeEncoderReading());
+        double drivePower = driveController.calculate(Robot.m_driveSubsystem.getDriveEncoderReading());
+        double strafePower = strafeController.calculate(Robot.m_driveSubsystem.getStrafeEncoderReading());
 
         if (driveController.atSetPoint()) {
             drivePower = 0;
@@ -42,7 +42,7 @@ public class DriveToSetpoint extends CommandBase {
             strafePower = 0;
         }
 
-        RobotContainer.m_driveSubsystem.drive(drivePower, 0, strafePower);
+        Robot.m_driveSubsystem.drive(drivePower, 0, strafePower);
     }
     @Override
     public void end(boolean interrupted) {

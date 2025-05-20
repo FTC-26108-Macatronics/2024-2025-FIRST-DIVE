@@ -33,19 +33,16 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void moveLift(int state, boolean override) {
-        double pwr = 0;
 
-        if (state == 2 && (getLift() < Constants.ElevatorConstants.MAX_LIFT || override)) {
-            pwr = Constants.ElevatorConstants.PWR_LIFT;
+        if (!((state == 1 && (getLift() <= Constants.ElevatorConstants.MAX_LIFT || override)) ||
+                ((state == -1 && (getLift() >= Constants.ElevatorConstants.MIN_LIFT || override))))) {
+            setLift(state);
         }
-
-        if (state == 1 && (getLift() > Constants.ElevatorConstants.MIN_LIFT || override)) {
-            pwr = -Constants.ElevatorConstants.PWR_LIFT;
-        }
-
-        setLift(pwr);
     }
 
+    public void stopLift() {
+        liftMotor.setPower(0);
+    }
 
     @Override
     public void periodic() {

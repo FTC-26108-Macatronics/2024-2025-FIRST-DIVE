@@ -38,7 +38,7 @@ public class DriveSubsystem extends SubsystemBase {
         transverseDrive = opMode.hardwareMap.get(DcMotorEx.class, "transverseDrive");
         imu = opMode.hardwareMap.get(IMU.class, "imu");
 
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.FORWARD;
         RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.DOWN;
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
 
@@ -62,15 +62,12 @@ public class DriveSubsystem extends SubsystemBase {
         transverseDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         driveController = new PIDController(Constants.DriveConstants.K_P_DRIVE, Constants.DriveConstants.K_I_DRIVE, Constants.DriveConstants.K_D_DRIVE);
-        driveController.setSetPoint(Constants.AutoConstants.DRIVE_SETPOINT);
         driveController.clearTotalError();
 
         turnController = new PIDController(Constants.DriveConstants.K_P_TURN, Constants.DriveConstants.K_I_TURN, Constants.DriveConstants.K_D_TURN);
-        turnController.setSetPoint(Constants.AutoConstants.DRIVE_SETPOINT);
         turnController.clearTotalError();
 
         strafeController = new PIDController(Constants.DriveConstants.K_P_STRAFE, Constants.DriveConstants.K_I_STRAFE, Constants.DriveConstants.K_D_STRAFE);
-        strafeController.setSetPoint(Constants.AutoConstants.DRIVE_SETPOINT);
         strafeController.clearTotalError();
     }
     public void drive(double drive, double turn, double strafe) {
@@ -78,14 +75,15 @@ public class DriveSubsystem extends SubsystemBase {
         double rightPwr = drive - turn;
         double max = Math.max(Math.abs(leftPwr), Math.abs(rightPwr));
 
-        if (max > MAX_PWR_DT) {
-            leftPwr /= max;
-            rightPwr /= max;
-        }
+//        if (max > MAX_PWR_DT) {
+//            leftPwr /= max;
+//            rightPwr /= max;
+//        }
 
         leftDrive.setPower(leftPwr);
         rightDrive.setPower(rightPwr);
         transverseDrive.setPower(strafe);
+
     }
 
     public void resetGyro() {
@@ -97,10 +95,6 @@ public class DriveSubsystem extends SubsystemBase {
     public double getRotation() {
         return imu.getRobotYawPitchRollAngles().getYaw();
     }
-    public void setDriveSetpoint(double setpoint) {
-        driveController.setSetPoint(setpoint);
-    }
-
     public double getDriveEncoderReading() {
         return rightDrive.getCurrentPosition();
     }
@@ -118,10 +112,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        telemetry.addData("Motor Velocity", leftDrive.getVelocity());
-        telemetry.addData("Motor Current", leftDrive.getCurrent(CurrentUnit.MILLIAMPS));
-        telemetry.addData("Current rotation", getRotation());
-        telemetry.addData("Angular velocity", getAngularVelocity());
+//        telemetry.addData("Motor Velocity", leftDrive.getVelocity());
+//        telemetry.addData("Motor Current", leftDrive.getCurrent(CurrentUnit.MILLIAMPS));
+//        telemetry.addData("Current rotation", getRotation());
+//        telemetry.addData("Angular velocity", getAngularVelocity());
     }
 
 }

@@ -19,6 +19,13 @@ public class Constants {
         public static double K_P_STRAFE = 0;
         public static double K_I_STRAFE = 0;
         public static double K_D_STRAFE = 0;
+
+        public static final double WHEEL_DIAMETER = 5.2; // in mm
+        public static final double COUNTS_PER_MOTOR_REV = 28.0;
+        public static final double DRIVE_GEAR_REDUCTION = 30.24;
+        public static final double WHEEL_CIRCUMFERENCE_MM = WHEEL_DIAMETER * 3.14; // in mm
+        public static final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
+        public static final double COUNTS_PER_CM = (COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM) * 0.1;
     }
 
     @Config

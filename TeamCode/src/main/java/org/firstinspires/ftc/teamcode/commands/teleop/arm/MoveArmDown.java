@@ -2,19 +2,26 @@ package org.firstinspires.ftc.teamcode.commands.teleop.arm;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+import static org.firstinspires.ftc.teamcode.Robot.m_armSubsystem;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
 public class MoveArmDown extends CommandBase {
 
     private boolean override;
 
-    private ArmSubsystem m_armSubsystem;
+    private final ArmSubsystem m_armSubsystem;
+    private final GamepadEx m_driverController;
 
-    public MoveArmDown(ArmSubsystem m_armSubsystem) {
+    public MoveArmDown(ArmSubsystem m_armSubsystem, GamepadEx m_driverController) {
         this.m_armSubsystem = m_armSubsystem;
+        this.m_driverController = m_driverController;
         addRequirements();
 
     }
@@ -22,25 +29,22 @@ public class MoveArmDown extends CommandBase {
     @Override
     public void initialize() {
         override = false;
-
     }
 
     @Override
     public void execute() {
+        double arm = m_driverController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
 
-        if (gamepad1.options) {
-            override = true;
-            telemetry.addData("!OVERRIDE", "ACTIVE!");
-        }
+        Robot.m_armSubsystem.setArm(-1);
 
-        double arm = -gamepad1.left_trigger;
-        m_armSubsystem.moveArm(arm, override);
 
     }
     @Override
     public void end(boolean interrupted) {
 
-        m_armSubsystem.moveArm(0, false);
+
+        m_armSubsystem.setArm(0);
+//        m_armSubsystem.moveArm(0, false);
     }
 
     @Override

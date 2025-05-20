@@ -50,7 +50,7 @@ public class ClawSubsystem extends SubsystemBase {
 
     }
 
-    public int getClaw() {
+    public int getClawPosition() {
         return clawMotor.getCurrentPosition();
     }
 
@@ -59,15 +59,15 @@ public class ClawSubsystem extends SubsystemBase {
     }
 
     public void rotateClaw(int state, boolean override) {
-        if (state == 2 && (getClaw() < Constants.ClawConstants.MAX_CLAW || override)) {
+        if (state == 2 && (getClawPosition() < Constants.ClawConstants.MAX_CLAW || override)) {
             targetClaw += Constants.ClawConstants.PWR_CLAW;
         }
 
-        if (state == 1 && (getClaw() > Constants.ClawConstants.MIN_CLAW || override)) {
+        if (state == 1 && (getClawPosition() > Constants.ClawConstants.MIN_CLAW || override)) {
             targetClaw -= Constants.ClawConstants.PWR_CLAW;
         }
 
-        double error = targetClaw - getClaw();
+        double error = targetClaw - getClawPosition();
         iClaw += error * timerClaw.seconds();
 
         setClaw((Constants.ClawConstants.K_P_CLAW * error) + (Constants.ClawConstants.K_I_CLAW * iClaw) + (Constants.ClawConstants.K_D_CLAW * ((error - lastErrorClaw) / timerClaw.seconds())));

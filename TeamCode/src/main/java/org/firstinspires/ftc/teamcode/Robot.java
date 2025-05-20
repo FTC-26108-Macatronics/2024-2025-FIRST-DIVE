@@ -15,15 +15,15 @@ import org.firstinspires.ftc.teamcode.commands.teleop.arm.MoveArmDown;
 import org.firstinspires.ftc.teamcode.commands.teleop.arm.MoveArmUp;
 import org.firstinspires.ftc.teamcode.commands.teleop.claw.MoveClaw;
 import org.firstinspires.ftc.teamcode.commands.teleop.drive.DriveCommand;
-import org.firstinspires.ftc.teamcode.commands.teleop.elevator.MoveElevator;
-import org.firstinspires.ftc.teamcode.controls.Controller;
+import org.firstinspires.ftc.teamcode.commands.teleop.elevator.MoveElevatorDown;
+import org.firstinspires.ftc.teamcode.commands.teleop.elevator.MoveElevatorUp;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ElevatorSubsystem;
 
 @TeleOp
-public class RobotContainer extends OpMode {
+public class Robot extends OpMode {
 
     public FtcDashboard dashboard;
     public static Telemetry dashboardTelemetry;
@@ -34,10 +34,12 @@ public class RobotContainer extends OpMode {
     public static CommandScheduler commandScheduler;
     public static GamepadEx m_driverController;
     public static GamepadEx m_operatorController;
-    public static Button openClaw;
-    public static Button moveElevatorUp;
-    public static Button moveElevatorDown;
-    public static Trigger moveArmUp;
+    public static Button DRIVER_LEFT_BUMPER;
+    public static Button DRIVER_DPAD_UP;
+    public static Button DRIVER_DPAD_DOWN;
+    public static Trigger DRIVER_LEFT_TRIGGER;
+    public static Trigger DRIVER_RIGHT_TRIGGER;
+
     public static Trigger moveArmDown;
 
 
@@ -51,32 +53,40 @@ public class RobotContainer extends OpMode {
         m_armSubsystem = new ArmSubsystem(this);
         m_clawSubsystem = new ClawSubsystem(this);
         m_elevatorSubsystem = new ElevatorSubsystem(this);
-        commandScheduler = CommandScheduler.getInstance();
+//        commandScheduler = CommandScheduler.getInstance();
 
         m_driveSubsystem.setDefaultCommand(new DriveCommand(m_driveSubsystem));
+
 
         m_driverController = new GamepadEx(gamepad1);
         m_operatorController = new GamepadEx(gamepad2);
 
-        openClaw = new GamepadButton(m_operatorController, GamepadKeys.Button.LEFT_BUMPER);
-        moveElevatorUp = new GamepadButton(m_operatorController, GamepadKeys.Button.DPAD_UP);
-        moveElevatorDown = new GamepadButton(m_operatorController, GamepadKeys.Button.DPAD_DOWN);
+        DRIVER_LEFT_BUMPER = new GamepadButton(m_driverController, GamepadKeys.Button.LEFT_BUMPER);
+        DRIVER_DPAD_UP = new GamepadButton(m_driverController, GamepadKeys.Button.DPAD_UP);
+        DRIVER_DPAD_DOWN = new GamepadButton(m_driverController, GamepadKeys.Button.DPAD_DOWN);
+        DRIVER_LEFT_TRIGGER = new Controller.ControllerTrigger(m_driverController, GamepadKeys.Trigger.LEFT_TRIGGER);
+        DRIVER_RIGHT_TRIGGER = new Controller.ControllerTrigger(m_driverController, GamepadKeys.Trigger.RIGHT_TRIGGER);
 
-        moveArmUp = new Trigger(Controller::getRightTrigger);
-        moveArmDown = new Trigger(Controller::getLeftTrigger);
+
+        m_driverController.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
+
+        configureBindings();
 
     }
 
     @Override
     public void loop() {
-        openClaw.whileHeld(new MoveClaw(m_clawSubsystem));
-        moveElevatorDown.whileHeld(new MoveElevator(m_elevatorSubsystem));
-        moveElevatorUp.whileHeld(new MoveElevator(m_elevatorSubsystem));
-        moveArmUp.whileActiveContinuous(new MoveArmUp(m_armSubsystem));
-        moveArmDown.whileActiveContinuous(new MoveArmDown(m_armSubsystem));
+        CommandScheduler.getInstance().run();
     }
-    public boolean rightTriggerPressed() {
-        return gamepad1.right_trigger > 0.3;
+
+    public void configureBindings() {
+//        DRIVER_LEFT_BUMPER.whileHeld(new MoveClaw(m_clawSubsystem));
+        DRIVER_DPAD_UP.whileHeld(new MoveElevatorUp(m_elevatorSubsystem,  m_driverController));
+        DRIVER_DPAD_DOWN.whileHeld(new MoveElevatorDown(m_elevatorSubsystem, m_driverController));
+        DRIVER_LEFT_TRIGGER.whileActiveContinuous(new MoveArmUp(m_armSubsystem, m_driverController));
+        DRIVER_RIGHT_TRIGGER.whileActiveContinuous(new MoveArmDown(m_armSubsystem, m_driverController));
+
+        m_driveSubsystem.setDefaultCommand(new DriveCommand(m_driveSubsystem));
     }
 
 }

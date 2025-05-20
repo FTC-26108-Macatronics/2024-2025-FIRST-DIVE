@@ -3,15 +3,15 @@ package org.firstinspires.ftc.teamcode.commands.teleop.drive;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 import com.arcrobotics.ftclib.command.CommandBase;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
 public class DriveCommand extends CommandBase {
 
-    private DriveSubsystem m_driveSubsystem;
-
+    private final DriveSubsystem m_driveSubsystem;
     public DriveCommand(DriveSubsystem m_driveSubsystem) {
         this.m_driveSubsystem = m_driveSubsystem;
-        addRequirements();
+        addRequirements(m_driveSubsystem);
 
     }
 
@@ -21,9 +21,9 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double drive = -gamepad1.left_stick_y;
-        double turn = gamepad1.right_stick_x;
-        double strafe = -gamepad1.left_stick_x;
+        double drive = Math.pow(-Robot.m_driverController.getLeftY(), 3);
+        double turn = Math.pow(Robot.m_driverController.getRightX(), 3);
+        double strafe = Math.pow(-Robot.m_driverController.getLeftX(), 3);
 
         m_driveSubsystem.drive(drive, turn, strafe);
 

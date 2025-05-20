@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.RobotContainer;
+import org.firstinspires.ftc.teamcode.Robot;
 
 
 public class ArmSubsystem extends SubsystemBase {
@@ -30,7 +30,7 @@ public class ArmSubsystem extends SubsystemBase {
 
         armController = new PIDController(Constants.ArmConstants.K_P_ARM, Constants.ArmConstants.K_I_ARM, Constants.ArmConstants.K_D_ARM);
 
-        telemetry = RobotContainer.dashboardTelemetry;
+        telemetry = Robot.dashboardTelemetry;
     }
 
     public int getArm() {
