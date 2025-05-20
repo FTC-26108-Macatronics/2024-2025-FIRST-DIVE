@@ -40,6 +40,10 @@ public class Robot extends OpMode {
     public static Trigger DRIVER_LEFT_TRIGGER;
     public static Trigger DRIVER_RIGHT_TRIGGER;
 
+    public static Button DRIVER_BUTTON_A;
+
+    public static Button DRIVER_BUTTON_Y;
+
     public static Trigger moveArmDown;
 
 
@@ -66,7 +70,8 @@ public class Robot extends OpMode {
         DRIVER_DPAD_DOWN = new GamepadButton(m_driverController, GamepadKeys.Button.DPAD_DOWN);
         DRIVER_LEFT_TRIGGER = new Controller.ControllerTrigger(m_driverController, GamepadKeys.Trigger.LEFT_TRIGGER);
         DRIVER_RIGHT_TRIGGER = new Controller.ControllerTrigger(m_driverController, GamepadKeys.Trigger.RIGHT_TRIGGER);
-
+        DRIVER_BUTTON_A = new GamepadButton(m_driverController, GamepadKeys.Button.A);
+        DRIVER_BUTTON_Y = new GamepadButton(m_driverController, GamepadKeys.Button.Y);
 
         m_driverController.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
 
@@ -85,6 +90,7 @@ public class Robot extends OpMode {
         DRIVER_DPAD_DOWN.whileHeld(new MoveElevatorDown(m_elevatorSubsystem, m_driverController));
         DRIVER_LEFT_TRIGGER.whileActiveContinuous(new MoveArmUp(m_armSubsystem, m_driverController));
         DRIVER_RIGHT_TRIGGER.whileActiveContinuous(new MoveArmDown(m_armSubsystem, m_driverController));
+        DRIVER_BUTTON_A.whileHeld(new MoveClaw(m_clawSubsystem));
 
         m_driveSubsystem.setDefaultCommand(new DriveCommand(m_driveSubsystem));
     }
