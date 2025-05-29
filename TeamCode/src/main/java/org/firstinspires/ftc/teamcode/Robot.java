@@ -15,8 +15,7 @@ import org.firstinspires.ftc.teamcode.commands.teleop.arm.MoveArmDown;
 import org.firstinspires.ftc.teamcode.commands.teleop.arm.MoveArmUp;
 import org.firstinspires.ftc.teamcode.commands.teleop.claw.MoveClaw;
 import org.firstinspires.ftc.teamcode.commands.teleop.drive.DriveCommand;
-import org.firstinspires.ftc.teamcode.commands.teleop.elevator.MoveElevatorDown;
-import org.firstinspires.ftc.teamcode.commands.teleop.elevator.MoveElevatorUp;
+import org.firstinspires.ftc.teamcode.commands.teleop.elevator.MoveElevator;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
@@ -41,15 +40,12 @@ public class Robot extends OpMode {
     public static Trigger DRIVER_RIGHT_TRIGGER;
 
     public static Button DRIVER_BUTTON_A;
+    public static Button DRIVER_BUTTON_B;
+    public static Button DRIVER_BUTTON_X;
 
     public static Button DRIVER_BUTTON_Y;
 
-    public static Trigger moveArmDown;
-
-
-    @Override
-    public void init() {
-
+    public Robot() {
         dashboard = FtcDashboard.getInstance();
         dashboardTelemetry = dashboard.getTelemetry();
 
@@ -67,9 +63,15 @@ public class Robot extends OpMode {
         DRIVER_LEFT_TRIGGER = new Controller.ControllerTrigger(m_driverController, GamepadKeys.Trigger.LEFT_TRIGGER);
         DRIVER_RIGHT_TRIGGER = new Controller.ControllerTrigger(m_driverController, GamepadKeys.Trigger.RIGHT_TRIGGER);
         DRIVER_BUTTON_A = new GamepadButton(m_driverController, GamepadKeys.Button.A);
+        DRIVER_BUTTON_B = new GamepadButton(m_driverController, GamepadKeys.Button.B);
+        DRIVER_BUTTON_X = new GamepadButton(m_driverController, GamepadKeys.Button.X);
         DRIVER_BUTTON_Y = new GamepadButton(m_driverController, GamepadKeys.Button.Y);
 
         configureBindings();
+    }
+
+    @Override
+    public void init() {
 
     }
 
@@ -89,8 +91,12 @@ public class Robot extends OpMode {
     public void configureBindings() {
         m_driveSubsystem.setDefaultCommand(new DriveCommand(m_driveSubsystem));
 //        DRIVER_LEFT_BUMPER.whileHeld(new MoveClaw(m_clawSubsystem));
-        DRIVER_DPAD_UP.whileHeld(new MoveElevatorUp(m_elevatorSubsystem,  m_driverController));
-        DRIVER_DPAD_DOWN.whileHeld(new MoveElevatorDown(m_elevatorSubsystem, m_driverController));
+
+        DRIVER_BUTTON_A.whenPressed(new MoveElevator(m_elevatorSubsystem, 0));
+        DRIVER_BUTTON_B.whenPressed(new MoveElevator(m_elevatorSubsystem, Constants.ElevatorConstants.ELEVATOR_L1_HEIGHT));
+        DRIVER_BUTTON_X.whenPressed(new MoveElevator(m_elevatorSubsystem, Constants.ElevatorConstants.ELEVATOR_L2_HEIGHT));
+        DRIVER_BUTTON_Y.whenPressed(new MoveElevator(m_elevatorSubsystem, Constants.ElevatorConstants.ELEVATOR_L3_HEIGHT));
+
         DRIVER_LEFT_TRIGGER.whileActiveContinuous(new MoveArmUp(m_armSubsystem, m_driverController));
         DRIVER_RIGHT_TRIGGER.whileActiveContinuous(new MoveArmDown(m_armSubsystem, m_driverController));
         DRIVER_BUTTON_A.whileHeld(new MoveClaw(m_clawSubsystem));

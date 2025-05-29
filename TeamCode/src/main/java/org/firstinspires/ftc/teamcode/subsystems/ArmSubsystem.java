@@ -2,8 +2,11 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
+import com.arcrobotics.ftclib.command.ProfiledPIDCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.controller.wpilibcontroller.ProfiledPIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -19,7 +22,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     private final DcMotorEx armMotor;
     private final Telemetry telemetry;
-    private final PIDController armController;
+    private final ProfiledPIDController armController;
 
     private final Telemetry dashboard;
 
@@ -33,7 +36,7 @@ public class ArmSubsystem extends SubsystemBase {
         armMotor.setDirection(DcMotorEx.Direction.FORWARD);
         armMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
-        armController = new PIDController(Constants.ArmConstants.K_P_ARM, Constants.ArmConstants.K_I_ARM, Constants.ArmConstants.K_D_ARM);
+        armController = new ProfiledPIDController(Constants.ArmConstants.K_P_ARM, Constants.ArmConstants.K_I_ARM, Constants.ArmConstants.K_D_ARM, Constants.ArmConstants.armConstraints);
 
         telemetry = Robot.dashboardTelemetry;
     }
@@ -47,8 +50,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void moveArm(double rotation, boolean override) {
-        armController.setSetPoint(rotation);
-        if (!armController.atSetPoint()) {
+        armController.setGoal(rotation);
+        if (!armController.atGoal()) {
             setArm(armController.calculate(armMotor.getCurrentPosition()));
         }
     }
