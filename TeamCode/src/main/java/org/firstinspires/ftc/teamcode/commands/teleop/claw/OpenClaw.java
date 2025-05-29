@@ -2,26 +2,25 @@ package org.firstinspires.ftc.teamcode.commands.teleop.claw;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.subsystems.ClawRotationSubsystem;
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 
-public class MoveClaw extends CommandBase {
+public class OpenClaw extends CommandBase {
     private final ClawSubsystem m_clawSubsystem;
-
-    public MoveClaw(ClawSubsystem m_clawSubsystem) {
+    private boolean endCommand = false;
+    public OpenClaw(ClawSubsystem m_clawSubsystem) {
         this.m_clawSubsystem = m_clawSubsystem;
-        addRequirements(m_clawSubsystem);
-
+        addRequirements();
     }
 
     @Override
     public void initialize() {
-
+        m_clawSubsystem.setClawPosition(Constants.ClawConstants.SERVO_OPEN);
+        endCommand = true;
     }
 
     @Override
     public void execute() {
-        m_clawSubsystem.goToPosition();
     }
     @Override
     public void end(boolean interrupted) {
@@ -29,7 +28,7 @@ public class MoveClaw extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return endCommand;
     }
 
 

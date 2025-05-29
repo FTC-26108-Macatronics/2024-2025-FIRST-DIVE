@@ -3,14 +3,13 @@ package org.firstinspires.ftc.teamcode.commands.teleop.claw;
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.ClawRotationSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 
-public class MoveClaw extends CommandBase {
-    private final ClawSubsystem m_clawSubsystem;
+public class RotateClaw extends CommandBase {
+    private final ClawRotationSubsystem m_clawRotationSubsystem;
 
-    public MoveClaw(ClawSubsystem m_clawSubsystem) {
-        this.m_clawSubsystem = m_clawSubsystem;
-        addRequirements(m_clawSubsystem);
+    public RotateClaw(ClawRotationSubsystem m_clawRotationSubsystem) {
+        this.m_clawRotationSubsystem = m_clawRotationSubsystem;
+        addRequirements();
 
     }
 
@@ -21,7 +20,7 @@ public class MoveClaw extends CommandBase {
 
     @Override
     public void execute() {
-        m_clawSubsystem.goToPosition();
+        m_clawRotationSubsystem.goToSetpointRotation();
     }
     @Override
     public void end(boolean interrupted) {

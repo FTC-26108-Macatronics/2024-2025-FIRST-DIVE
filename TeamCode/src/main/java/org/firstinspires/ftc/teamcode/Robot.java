@@ -11,12 +11,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.teleop.arm.MoveArmDown;
-import org.firstinspires.ftc.teamcode.commands.teleop.arm.MoveArmUp;
+import org.firstinspires.ftc.teamcode.commands.teleop.arm.ChangeArmPosition;
+import org.firstinspires.ftc.teamcode.commands.teleop.arm.MoveArm;
 import org.firstinspires.ftc.teamcode.commands.teleop.claw.MoveClaw;
+import org.firstinspires.ftc.teamcode.commands.teleop.claw.RotateClaw;
 import org.firstinspires.ftc.teamcode.commands.teleop.drive.DriveCommand;
+import org.firstinspires.ftc.teamcode.commands.teleop.elevator.ChangeElevatorPosition;
 import org.firstinspires.ftc.teamcode.commands.teleop.elevator.MoveElevator;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.ClawRotationSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ElevatorSubsystem;
@@ -25,10 +28,12 @@ import org.firstinspires.ftc.teamcode.subsystems.ElevatorSubsystem;
 public class Robot extends OpMode {
 
     public FtcDashboard dashboard;
-    public static Telemetry dashboardTelemetry;
+    public Telemetry dashboardTelemetry;
     public static DriveSubsystem m_driveSubsystem;
     public static ArmSubsystem m_armSubsystem;
     public static ClawSubsystem m_clawSubsystem;
+    public static ClawRotationSubsystem m_clawRotationSubsystem;
+
     public static ElevatorSubsystem m_elevatorSubsystem;
     public static CommandScheduler commandScheduler;
     public static GamepadEx m_driverController;
@@ -38,12 +43,14 @@ public class Robot extends OpMode {
     public static Button DRIVER_DPAD_DOWN;
     public static Trigger DRIVER_LEFT_TRIGGER;
     public static Trigger DRIVER_RIGHT_TRIGGER;
-
     public static Button DRIVER_BUTTON_A;
     public static Button DRIVER_BUTTON_B;
     public static Button DRIVER_BUTTON_X;
-
     public static Button DRIVER_BUTTON_Y;
+    public static Button DRIVER_POV_DOWN;
+    public static Button DRIVER_POV_UP;
+    public static Button DRIVER_POV_LEFT;
+    public static Button DRIVER_POV_RIGHT;
 
     public Robot() {
         dashboard = FtcDashboard.getInstance();
@@ -52,6 +59,7 @@ public class Robot extends OpMode {
         m_driveSubsystem = new DriveSubsystem(this, dashboardTelemetry);
         m_armSubsystem = new ArmSubsystem(this, dashboardTelemetry);
         m_clawSubsystem = new ClawSubsystem(this, dashboardTelemetry);
+        m_clawRotationSubsystem = new ClawRotationSubsystem(this, dashboardTelemetry);
         m_elevatorSubsystem = new ElevatorSubsystem(this, dashboardTelemetry);
 
         m_driverController = new GamepadEx(gamepad1);
@@ -66,6 +74,10 @@ public class Robot extends OpMode {
         DRIVER_BUTTON_B = new GamepadButton(m_driverController, GamepadKeys.Button.B);
         DRIVER_BUTTON_X = new GamepadButton(m_driverController, GamepadKeys.Button.X);
         DRIVER_BUTTON_Y = new GamepadButton(m_driverController, GamepadKeys.Button.Y);
+        DRIVER_POV_UP = new GamepadButton(m_driverController, GamepadKeys.Button.DPAD_UP);
+        DRIVER_POV_DOWN = new GamepadButton(m_driverController, GamepadKeys.Button.DPAD_DOWN);
+        DRIVER_POV_LEFT = new GamepadButton(m_driverController, GamepadKeys.Button.DPAD_LEFT);
+        DRIVER_POV_RIGHT = new GamepadButton(m_driverController, GamepadKeys.Button.DPAD_RIGHT);
 
         configureBindings();
     }
@@ -77,10 +89,10 @@ public class Robot extends OpMode {
 
     @Override
     public void init_loop() {
-        m_driveSubsystem.updateTelemetry();
-        m_armSubsystem.updateTelemetry();
-        m_clawSubsystem.updateTelemetry();
-        m_elevatorSubsystem.updateTelemetry();
+        m_driveSubsystem.periodic();
+        m_armSubsystem.periodic();
+        m_clawSubsystem.periodic();
+        m_elevatorSubsystem.periodic();
     }
 
     @Override
@@ -90,18 +102,22 @@ public class Robot extends OpMode {
 
     public void configureBindings() {
         m_driveSubsystem.setDefaultCommand(new DriveCommand(m_driveSubsystem));
-//        DRIVER_LEFT_BUMPER.whileHeld(new MoveClaw(m_clawSubsystem));
+        m_elevatorSubsystem.setDefaultCommand(new MoveElevator(m_elevatorSubsystem));
+        m_armSubsystem.setDefaultCommand(new MoveArm(m_armSubsystem));
+        m_clawSubsystem.setDefaultCommand(new MoveClaw(m_clawSubsystem));
+        m_clawRotationSubsystem.setDefaultCommand(new RotateClaw(m_clawRotationSubsystem));
 
-        DRIVER_BUTTON_A.whenPressed(new MoveElevator(m_elevatorSubsystem, 0));
-        DRIVER_BUTTON_B.whenPressed(new MoveElevator(m_elevatorSubsystem, Constants.ElevatorConstants.ELEVATOR_L1_HEIGHT));
-        DRIVER_BUTTON_X.whenPressed(new MoveElevator(m_elevatorSubsystem, Constants.ElevatorConstants.ELEVATOR_L2_HEIGHT));
-        DRIVER_BUTTON_Y.whenPressed(new MoveElevator(m_elevatorSubsystem, Constants.ElevatorConstants.ELEVATOR_L3_HEIGHT));
+        DRIVER_BUTTON_A.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, 0));
+        DRIVER_BUTTON_B.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, Constants.ElevatorConstants.ELEVATOR_L1_HEIGHT));
+        DRIVER_BUTTON_X.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, Constants.ElevatorConstants.ELEVATOR_L2_HEIGHT));
+        DRIVER_BUTTON_Y.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, Constants.ElevatorConstants.ELEVATOR_L3_HEIGHT));
 
-        DRIVER_LEFT_TRIGGER.whileActiveContinuous(new MoveArmUp(m_armSubsystem, m_driverController));
-        DRIVER_RIGHT_TRIGGER.whileActiveContinuous(new MoveArmDown(m_armSubsystem, m_driverController));
+        DRIVER_POV_DOWN.whenPressed(new ChangeArmPosition(m_armSubsystem, 0));
+        DRIVER_POV_LEFT.whenPressed(new ChangeArmPosition(m_armSubsystem, Constants.ArmConstants.ARM_L1_HEIGHT));
+        DRIVER_POV_RIGHT.whenPressed(new ChangeArmPosition(m_armSubsystem, Constants.ArmConstants.ARM_L2_HEIGHT));
+        DRIVER_POV_UP.whenPressed(new ChangeArmPosition(m_armSubsystem, Constants.ArmConstants.ARM_L3_HEIGHT));
+
         DRIVER_BUTTON_A.whileHeld(new MoveClaw(m_clawSubsystem));
-
-        m_driveSubsystem.setDefaultCommand(new DriveCommand(m_driveSubsystem));
     }
 
 }

@@ -34,10 +34,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         liftMotor.setDirection(DcMotorEx.Direction.FORWARD);
         liftMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
-        dashboard.addData("KP ELV", Constants.ElevatorConstants.K_P_ELV);
-        dashboard.addData("KI ELV", Constants.ElevatorConstants.K_I_ELV);
-        dashboard.addData("KD ELV", Constants.ElevatorConstants.K_D_ELV);
-
     }
     public enum ElevatorPosition {
         L1,
@@ -50,24 +46,16 @@ public class ElevatorSubsystem extends SubsystemBase {
         liftMotor.setPower(power);
     }
 
-    public double getPosition() {
-        return liftMotor.getCurrentPosition();
-    }
-
-    public double getVelocity() {
-        return liftMotor.getVelocity();
-    }
-
     public boolean atTargetHeight() {
         return Math.abs(getPositionInMeters() - setpoint) <= Constants.ElevatorConstants.ELEVATOR_ERROR_TOLERANCE;
     }
 
     public double getPositionInMeters() {
-        return getPosition() * Constants.ElevatorConstants.ELEVATOR_METERS_PER_MOTOR_ROTATION;
+        return liftMotor.getCurrentPosition() * Constants.ElevatorConstants.ELEVATOR_METERS_PER_MOTOR_ROTATION;
     }
 
     public double getVelocityInMeters() {
-        return getVelocity() * Constants.ElevatorConstants.ELEVATOR_METERS_PER_MOTOR_ROTATION;
+        return liftMotor.getVelocity() * Constants.ElevatorConstants.ELEVATOR_METERS_PER_MOTOR_ROTATION;
     }
 
     public void stop() {
@@ -95,6 +83,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         setPower(elevatorController.calculate(getPositionInMeters()));
     }
 
+    public double getSetpoint() {
+        return setpoint;
+    }
     public ElevatorPosition getElevatorEnumPosition() {
         double currentPosition = getPositionInMeters();
 
@@ -121,7 +112,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         updateTelemetry();
-        goToSetpoint();
     }
 
 }

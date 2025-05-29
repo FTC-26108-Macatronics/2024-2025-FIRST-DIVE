@@ -31,19 +31,24 @@ public class Constants {
 
     @Config
     public static class ArmConstants {
-        public static double K_P_ARM = 0.05;
+        public static double K_P_ARM = 0.05; //to tune
 
-        public static double K_I_ARM = 0.003;
+        public static double K_I_ARM = 0.003; // to tune
 
-        public static double K_D_ARM = 0.003;
+        public static double K_D_ARM = 0.003; // to tune
 
         public static double ARM_MAX_VELOCITY = 3; // to tune
-
         public static double ARM_MAX_ACCLERATION = 3; // to tune
         public static TrapezoidProfile.Constraints armConstraints = new TrapezoidProfile.Constraints(ARM_MAX_VELOCITY, ARM_MAX_ACCLERATION); // to tune
 
-        public static int MAX_ARM = 420;
-        public static int MIN_ARM = 0;
+        public static int MAX_ARM_HEIGHT = 420; //to tune
+        public static int MIN_ARM_HEIGHT = 0; //to tune (degrees)
+
+        public static double ARM_ERROR_TOLERANCE = 0.3; // to tune
+
+        public static double ARM_L1_HEIGHT = 0.3; // to tune (degrees)
+        public static double ARM_L2_HEIGHT = 0.3; // to tune (degrees)
+        public static double ARM_L3_HEIGHT = 0.3; // to tune (degrees)
 
     }
     @Config
@@ -54,8 +59,21 @@ public class Constants {
         public static double K_P_CLAW = 0.1;
         public static double K_I_CLAW = 0;
         public static double K_D_CLAW = 0;
-        public static int MAX_CLAW = 0;
-        public static int MIN_CLAW = -180;
+
+        public static double CLAW_DROP_ROTATION = 0.5;
+
+        public static double CLAW_PICKUP_ROTATION = 0.5;
+
+        public static double CLAW_CARRY_ROTATION = 0.5;
+
+        public static double CLAW_ERROR_TOLERANCE = 0.3; // to tune
+
+        public static double CLAW_ROTATION_MAX_VELOCITY = 3; // to tune
+
+        public static double CLAW_ROTATION_MAX_ACCLERATION = 3; // to tune
+        public static TrapezoidProfile.Constraints clawRotationConstraints = new TrapezoidProfile.Constraints(CLAW_ROTATION_MAX_VELOCITY, CLAW_ROTATION_MAX_ACCLERATION); // to tune
+        public static int MAX_CLAW_ROTATION = 0;
+        public static int MIN_CLAW_ROTATION = -180;
 
     }
     @Config
@@ -71,16 +89,16 @@ public class Constants {
         public static double ELV_MAX_ACCLERATION = 3; // to tune
         public static TrapezoidProfile.Constraints elvConstraints = new TrapezoidProfile.Constraints(ELV_MAX_VELOCITY, ELV_MAX_ACCLERATION); // to tune
 
-        public static int MAX_LIFT_HEIGHT = 8400; // to tune
-        public static int MIN_LIFT_HEIGHT = 0; // to tune
+        public static int MAX_LIFT_HEIGHT = 8400; // to tune (meters)
+        public static int MIN_LIFT_HEIGHT = 0; // to tune (meters)
 
         public static double ELEVATOR_METERS_PER_MOTOR_ROTATION = 0.5; // to tune
 
         public static double ELEVATOR_ERROR_TOLERANCE = 0.3; // to tune
 
-        public static double ELEVATOR_L1_HEIGHT = 0.3; // to tune
-        public static double ELEVATOR_L2_HEIGHT = 0.3; // to tune
-        public static double ELEVATOR_L3_HEIGHT = 0.3; // to tune
+        public static double ELEVATOR_L1_HEIGHT = 0.3; // to tune (meters)
+        public static double ELEVATOR_L2_HEIGHT = 0.3; // to tune (meters)
+        public static double ELEVATOR_L3_HEIGHT = 0.3; // to tune (meters)
 
     }
     @Config
