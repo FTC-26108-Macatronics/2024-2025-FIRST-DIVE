@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
 
 @Config
 public class Constants {
@@ -54,9 +55,29 @@ public class Constants {
     }
     @Config
     public static class ElevatorConstants {
+
+        public static double K_P_ELV = 0.2;
+
+        public static double K_I_ELV = 0.2;
+        public static double K_D_ELV = 0.3;
+
+        public static double ELV_MAX_VELOCITY = 3;
+
+        public static double ELV_MAX_ACCLERATION = 3;
+        public static TrapezoidProfile.Constraints elvConstraints = new TrapezoidProfile.Constraints(ELV_MAX_VELOCITY, ELV_MAX_ACCLERATION);
+
         public static double PWR_LIFT = 1;
-        public static int MAX_LIFT = 8400;
-        public static int MIN_LIFT = 0;
+        public static int MAX_LIFT_HEIGHT = 8400;
+        public static int MIN_LIFT_HEIGHT = 0;
+
+        public static double ELEVATOR_METERS_PER_MOTOR_ROTATION = 0.5;
+
+        public static double ELEVATOR_ERROR_TOLERANCE = 0.3;
+
+        public static double ELEVATOR_L1_HEIGHT = 0.3;
+        public static double ELEVATOR_L2_HEIGHT = 0.3;
+        public static double ELEVATOR_L3_HEIGHT = 0.3;
+
 
     }
     @Config

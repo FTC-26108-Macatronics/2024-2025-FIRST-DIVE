@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.robocol.Command;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
 
 
@@ -24,13 +25,14 @@ public class ClawSubsystem extends SubsystemBase {
     private double iClaw;
     private double lastErrorClaw;
 
-    private ElapsedTime timerClaw;
+    private final ElapsedTime timerClaw;
 
     private boolean clawState;
 
+    private final Telemetry dashboard;
 
-
-    public ClawSubsystem(final OpMode opMode) {
+    public ClawSubsystem(final OpMode opMode, Telemetry dashboard) {
+        this.dashboard = dashboard;
         clawMotor = opMode.hardwareMap.get(DcMotorEx.class, "claw_motor");
         clawServo = opMode.hardwareMap.get(Servo.class, "claw_servo");
 
@@ -84,10 +86,13 @@ public class ClawSubsystem extends SubsystemBase {
         }
     }
 
+    public void updateTelemetry() {
+
+    }
 
     @Override
     public void periodic() {
-
+        updateTelemetry();
 
     }
 

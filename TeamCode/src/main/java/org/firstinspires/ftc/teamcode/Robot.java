@@ -53,14 +53,10 @@ public class Robot extends OpMode {
         dashboard = FtcDashboard.getInstance();
         dashboardTelemetry = dashboard.getTelemetry();
 
-        m_driveSubsystem = new DriveSubsystem(this);
-        m_armSubsystem = new ArmSubsystem(this);
-        m_clawSubsystem = new ClawSubsystem(this);
-        m_elevatorSubsystem = new ElevatorSubsystem(this);
-//        commandScheduler = CommandScheduler.getInstance();
-
-        m_driveSubsystem.setDefaultCommand(new DriveCommand(m_driveSubsystem));
-
+        m_driveSubsystem = new DriveSubsystem(this, dashboardTelemetry);
+        m_armSubsystem = new ArmSubsystem(this, dashboardTelemetry);
+        m_clawSubsystem = new ClawSubsystem(this, dashboardTelemetry);
+        m_elevatorSubsystem = new ElevatorSubsystem(this, dashboardTelemetry);
 
         m_driverController = new GamepadEx(gamepad1);
         m_operatorController = new GamepadEx(gamepad2);
@@ -73,10 +69,16 @@ public class Robot extends OpMode {
         DRIVER_BUTTON_A = new GamepadButton(m_driverController, GamepadKeys.Button.A);
         DRIVER_BUTTON_Y = new GamepadButton(m_driverController, GamepadKeys.Button.Y);
 
-        m_driverController.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
-
         configureBindings();
 
+    }
+
+    @Override
+    public void init_loop() {
+        m_driveSubsystem.updateTelemetry();
+        m_armSubsystem.updateTelemetry();
+        m_clawSubsystem.updateTelemetry();
+        m_elevatorSubsystem.updateTelemetry();
     }
 
     @Override
@@ -85,6 +87,7 @@ public class Robot extends OpMode {
     }
 
     public void configureBindings() {
+        m_driveSubsystem.setDefaultCommand(new DriveCommand(m_driveSubsystem));
 //        DRIVER_LEFT_BUMPER.whileHeld(new MoveClaw(m_clawSubsystem));
         DRIVER_DPAD_UP.whileHeld(new MoveElevatorUp(m_elevatorSubsystem,  m_driverController));
         DRIVER_DPAD_DOWN.whileHeld(new MoveElevatorDown(m_elevatorSubsystem, m_driverController));

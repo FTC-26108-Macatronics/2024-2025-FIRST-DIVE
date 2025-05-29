@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -31,8 +32,13 @@ public class DriveSubsystem extends SubsystemBase {
     public double turnSetpoint = 0;
     public double strafeSetpoint = 0;
 
+    private final Telemetry dashboard;
 
-    public DriveSubsystem(final OpMode opMode) {
+
+    public DriveSubsystem(final OpMode opMode, final Telemetry dashboard) {
+
+        this.dashboard = dashboard;
+
         leftDrive = opMode.hardwareMap.get(DcMotorEx.class, "leftDrive");
         rightDrive = opMode.hardwareMap.get(DcMotorEx.class, "rightDrive");
         transverseDrive = opMode.hardwareMap.get(DcMotorEx.class, "transverseDrive");
@@ -109,13 +115,18 @@ public class DriveSubsystem extends SubsystemBase {
         transverseDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    public void updateTelemetry() {
+        dashboard.addData("gyro", getRotation());
+        dashboard.addData("Motor Velocity", leftDrive.getVelocity());
+        dashboard.addData("Motor Current", leftDrive.getCurrent(CurrentUnit.MILLIAMPS));
+        dashboard.addData("Current rotation", getRotation());
+        dashboard.addData("Angular velocity", getAngularVelocity());
+        dashboard.update();
+    }
 
     @Override
     public void periodic() {
-//        telemetry.addData("Motor Velocity", leftDrive.getVelocity());
-//        telemetry.addData("Motor Current", leftDrive.getCurrent(CurrentUnit.MILLIAMPS));
-//        telemetry.addData("Current rotation", getRotation());
-//        telemetry.addData("Angular velocity", getAngularVelocity());
+        updateTelemetry();
     }
 
 }

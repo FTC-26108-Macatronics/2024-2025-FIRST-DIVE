@@ -21,7 +21,12 @@ public class ArmSubsystem extends SubsystemBase {
     private final Telemetry telemetry;
     private final PIDController armController;
 
-    public ArmSubsystem(final OpMode opMode) {
+    private final Telemetry dashboard;
+
+    public ArmSubsystem(final OpMode opMode, Telemetry dashboard) {
+
+        this.dashboard = dashboard;
+
         armMotor = opMode.hardwareMap.get(DcMotorEx.class, "arm");
         armMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -49,13 +54,17 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
 
+    public void updateTelemetry() {
+        dashboard.addData("Arm Position", armMotor.getCurrentPosition());
+        dashboard.addData("Arm Current", armMotor.getCurrent(CurrentUnit.MILLIAMPS));
+
+        dashboard.addData("Arm Error", armController.getPositionError());
+        dashboard.addData("Arm Velocity", armMotor.getVelocity());
+    }
+
     @Override
     public void periodic() {
-        telemetry.addData("Arm Position", armMotor.getCurrentPosition());
-        telemetry.addData("Arm Current", armMotor.getCurrent(CurrentUnit.MILLIAMPS));
-
-        telemetry.addData("Arm Error", armController.getPositionError());
-        telemetry.addData("Arm Velocity", armMotor.getVelocity());
+        updateTelemetry();
     }
 
 }
