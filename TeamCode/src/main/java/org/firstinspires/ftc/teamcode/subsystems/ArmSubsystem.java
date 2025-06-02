@@ -67,6 +67,7 @@ public class ArmSubsystem extends SubsystemBase {
                 break;
             case L1:
                 setpoint = Constants.ArmConstants.ARM_L1_HEIGHT;
+                break;
             case L2:
                 setpoint = Constants.ArmConstants.ARM_L2_HEIGHT;
                 break;
