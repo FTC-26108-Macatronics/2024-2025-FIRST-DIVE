@@ -6,19 +6,19 @@ import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 public class ChangeArmPosition extends CommandBase {
 
     private final ArmSubsystem m_armSubsystem;
-    private final double setpoint;
+    private final ArmSubsystem.ArmPosition position;
     private boolean endCommand = false;
 
-    public ChangeArmPosition(ArmSubsystem m_armSubsystem, double setpoint) {
+    public ChangeArmPosition(ArmSubsystem m_armSubsystem, ArmSubsystem.ArmPosition position) {
         this.m_armSubsystem = m_armSubsystem;
-        this.setpoint = setpoint;
+        this.position = position;
         addRequirements();
 
     }
 
     @Override
     public void initialize() {
-        m_armSubsystem.setArmPosition(setpoint);
+        m_armSubsystem.setPosition(position);
         endCommand = true;
     }
 

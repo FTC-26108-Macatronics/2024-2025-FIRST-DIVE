@@ -7,19 +7,19 @@ import org.firstinspires.ftc.teamcode.subsystems.ElevatorSubsystem;
 public class ChangeElevatorPosition extends CommandBase {
 
     private final ElevatorSubsystem m_elevatorSubsystem;
-    private final double setpoint;
+    private final ElevatorSubsystem.ElevatorPosition position;
     private boolean endCommand = false;
 
-    public ChangeElevatorPosition(ElevatorSubsystem m_elevatorSubsystem, double setpoint) {
+    public ChangeElevatorPosition(ElevatorSubsystem m_elevatorSubsystem, ElevatorSubsystem.ElevatorPosition position) {
         this.m_elevatorSubsystem = m_elevatorSubsystem;
-        this.setpoint = setpoint;
+        this.position = position;
         addRequirements();
 
     }
 
     @Override
     public void initialize() {
-        m_elevatorSubsystem.setPosition(setpoint);
+        m_elevatorSubsystem.setPosition(position);
         endCommand = true;
     }
 

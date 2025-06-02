@@ -25,6 +25,8 @@ public class ArmSubsystem extends SubsystemBase {
     private final ProfiledPIDController armController;
     private double setpoint = 0;
 
+    private ArmPosition armPos = ArmPosition.HOME;
+
     public ArmSubsystem(final OpMode opMode, Telemetry dashboard) {
 
         this.dashboard = dashboard;
@@ -39,25 +41,13 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public enum ArmPosition {
+        HOME,
         L1,
         L2,
         L3,
         UNKNOWN
     }
 
-    public ArmPosition getArmEnumPosition() {
-        double currentPosition = getArmPositionDegrees();
-
-        if (Math.abs(currentPosition - Constants.ArmConstants.ARM_L1_HEIGHT) < Constants.ArmConstants.ARM_ERROR_TOLERANCE * 2) {
-            return ArmPosition.L1;
-        } else if (Math.abs(currentPosition - Constants.ArmConstants.ARM_L2_HEIGHT) < Constants.ArmConstants.ARM_ERROR_TOLERANCE * 2) {
-            return ArmPosition.L2;
-        } else if (Math.abs(currentPosition - Constants.ArmConstants.ARM_L3_HEIGHT) < Constants.ArmConstants.ARM_ERROR_TOLERANCE * 2) {
-            return ArmPosition.L3;
-        } else {
-            return ArmPosition.UNKNOWN;
-        }
-    }
     public int getArmPositionDegrees() {
         return armMotor.getCurrentPosition() * 360;
     }
@@ -67,21 +57,36 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void zeroArm() {
-        setArmPosition(0);
+        setPosition(ArmPosition.HOME);
     }
 
-    public void setArmPosition(double position) {
-        if (position >= Constants.ArmConstants.MAX_ARM_HEIGHT) {
-            setpoint = Constants.ArmConstants.MAX_ARM_HEIGHT;
+    public void setPosition(ArmPosition position) {
+        switch (position) {
+            case HOME:
+                setpoint = 0;
+                break;
+            case L1:
+                setpoint = Constants.ArmConstants.ARM_L1_HEIGHT;
+            case L2:
+                setpoint = Constants.ArmConstants.ARM_L2_HEIGHT;
+                break;
+            case L3:
+                setpoint = Constants.ArmConstants.ARM_L3_HEIGHT;
+                break;
+            default: setpoint = 0;
         }
-        else if (position <= Constants.ArmConstants.MIN_ARM_HEIGHT) {
-            setpoint = Constants.ArmConstants.MIN_ARM_HEIGHT;
-        }
-        else {
-            setpoint = position;
-        }
+        setArmEnumPosition(position);
         armController.setGoal(setpoint);
     }
+
+    public void setArmEnumPosition(ArmPosition position) {
+        armPos = position;
+    }
+
+    public ArmPosition getArmEnumPosition() {
+        return armPos;
+    }
+
 
     public void goToSetpoint() {
         setPower(armController.calculate(getArmPositionDegrees()));

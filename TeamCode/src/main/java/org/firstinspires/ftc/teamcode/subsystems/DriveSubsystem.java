@@ -26,12 +26,7 @@ public class DriveSubsystem extends SubsystemBase {
     public final PIDController turnController;
     public final PIDController strafeController;
 
-    public final IMU imu;
-
-    public double driveSetpoint = 0;
-    public double turnSetpoint = 0;
-    public double strafeSetpoint = 0;
-
+    private final IMU imu;
     private final Telemetry dashboard;
 
 

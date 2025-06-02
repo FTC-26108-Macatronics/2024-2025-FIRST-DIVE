@@ -101,7 +101,7 @@ public class Robot extends OpMode {
 
     @Override
     public void stop() {
-        commandScheduler.cancelAll();
+        deconfigureBindings();
     }
 
     public void configureBindings() {
@@ -110,17 +110,21 @@ public class Robot extends OpMode {
         m_armSubsystem.setDefaultCommand(new MoveArm(m_armSubsystem));
         m_clawRotationSubsystem.setDefaultCommand(new RotateClaw(m_clawRotationSubsystem));
 
-        DRIVER_BUTTON_A.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, 0));
-        DRIVER_BUTTON_B.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, Constants.ElevatorConstants.ELEVATOR_L1_HEIGHT));
-        DRIVER_BUTTON_X.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, Constants.ElevatorConstants.ELEVATOR_L2_HEIGHT));
-        DRIVER_BUTTON_Y.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, Constants.ElevatorConstants.ELEVATOR_L3_HEIGHT));
+        DRIVER_BUTTON_A.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, ElevatorSubsystem.ElevatorPosition.HOME));
+        DRIVER_BUTTON_B.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, ElevatorSubsystem.ElevatorPosition.L1));
+        DRIVER_BUTTON_X.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, ElevatorSubsystem.ElevatorPosition.L2));
+        DRIVER_BUTTON_Y.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, ElevatorSubsystem.ElevatorPosition.L3));
 
-        DRIVER_DPAD_DOWN.whenPressed(new ChangeArmPosition(m_armSubsystem, 0));
-        DRIVER_DPAD_LEFT.whenPressed(new ChangeArmPosition(m_armSubsystem, Constants.ArmConstants.ARM_L1_HEIGHT));
-        DRIVER_DPAD_RIGHT.whenPressed(new ChangeArmPosition(m_armSubsystem, Constants.ArmConstants.ARM_L2_HEIGHT));
-        DRIVER_DPAD_UP.whenPressed(new ChangeArmPosition(m_armSubsystem, Constants.ArmConstants.ARM_L3_HEIGHT));
+        DRIVER_DPAD_DOWN.whenPressed(new ChangeArmPosition(m_armSubsystem, ArmSubsystem.ArmPosition.HOME));
+        DRIVER_DPAD_LEFT.whenPressed(new ChangeArmPosition(m_armSubsystem, ArmSubsystem.ArmPosition.L1));
+        DRIVER_DPAD_RIGHT.whenPressed(new ChangeArmPosition(m_armSubsystem, ArmSubsystem.ArmPosition.L2));
+        DRIVER_DPAD_UP.whenPressed(new ChangeArmPosition(m_armSubsystem, ArmSubsystem.ArmPosition.L3));
 
 //        DRIVER_BUTTON_A.whileHeld(new MoveClaw(m_clawSubsystem));
+    }
+
+    public void deconfigureBindings() {
+        commandScheduler.cancelAll();
     }
 
 

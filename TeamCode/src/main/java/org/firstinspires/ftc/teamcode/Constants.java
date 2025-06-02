@@ -80,12 +80,9 @@ public class Constants {
     public static class ElevatorConstants {
 
         public static double K_P_ELV = 0.2; // to tune
-
         public static double K_I_ELV = 0.2; // to tune
         public static double K_D_ELV = 0.3; // to tune
-
         public static double ELV_MAX_VELOCITY = 3; // to tune
-
         public static double ELV_MAX_ACCLERATION = 3; // to tune
         public static TrapezoidProfile.Constraints elvConstraints = new TrapezoidProfile.Constraints(ELV_MAX_VELOCITY, ELV_MAX_ACCLERATION); // to tune
 

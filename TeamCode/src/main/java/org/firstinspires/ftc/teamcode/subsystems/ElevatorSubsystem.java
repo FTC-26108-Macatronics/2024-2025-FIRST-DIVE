@@ -1,18 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
-import com.arcrobotics.ftclib.command.CommandBase;
-import com.arcrobotics.ftclib.command.ProfiledPIDCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ProfiledPIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
 
@@ -23,6 +14,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final Telemetry dashboard;
     private final ProfiledPIDController elevatorController;
     private double setpoint = 0;
+    private ElevatorPosition elvPos = ElevatorPosition.HOME;
 
     public ElevatorSubsystem(final OpMode opMode, Telemetry dashboard) {
         this.dashboard = dashboard;
@@ -36,6 +28,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
     public enum ElevatorPosition {
+        HOME,
         L1,
         L2,
         L3,
@@ -63,19 +56,26 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void zeroElevator() {
-        setPosition(0);
+        setPosition(ElevatorPosition.HOME);
     }
 
-    public void setPosition(double position) {
-        if (position >= Constants.ElevatorConstants.MAX_LIFT_HEIGHT) {
-            setpoint = Constants.ElevatorConstants.MAX_LIFT_HEIGHT;
+    public void setPosition(ElevatorPosition position) {
+        switch (position) {
+            case HOME:
+                setpoint = 0;
+                break;
+            case L1:
+                setpoint = Constants.ElevatorConstants.ELEVATOR_L1_HEIGHT;
+                break;
+            case L2:
+                setpoint = Constants.ElevatorConstants.ELEVATOR_L2_HEIGHT;
+                break;
+            case L3:
+                setpoint = Constants.ElevatorConstants.ELEVATOR_L3_HEIGHT;
+                break;
+            default: setpoint = 0;
         }
-        else if (position <= Constants.ElevatorConstants.MIN_LIFT_HEIGHT) {
-            setpoint = Constants.ElevatorConstants.MIN_LIFT_HEIGHT;
-        }
-        else {
-            setpoint = position;
-        }
+        setElevatorEnumPosition(position);
         elevatorController.setGoal(setpoint);
     }
 
@@ -86,18 +86,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     public double getSetpoint() {
         return setpoint;
     }
-    public ElevatorPosition getElevatorEnumPosition() {
-        double currentPosition = getPositionInMeters();
 
-        if (Math.abs(currentPosition - Constants.ElevatorConstants.ELEVATOR_L1_HEIGHT) < Constants.ElevatorConstants.ELEVATOR_ERROR_TOLERANCE * 2) {
-            return ElevatorPosition.L1;
-        } else if (Math.abs(currentPosition - Constants.ElevatorConstants.ELEVATOR_L2_HEIGHT) < Constants.ElevatorConstants.ELEVATOR_ERROR_TOLERANCE * 2) {
-            return ElevatorPosition.L2;
-        } else if (Math.abs(currentPosition - Constants.ElevatorConstants.ELEVATOR_L3_HEIGHT) < Constants.ElevatorConstants.ELEVATOR_ERROR_TOLERANCE * 2) {
-            return ElevatorPosition.L3;
-        } else {
-            return ElevatorPosition.UNKNOWN;
-        }
+    public void setElevatorEnumPosition(ElevatorPosition position) {
+        elvPos = position;
+    }
+    public ElevatorPosition getElevatorEnumPosition() {
+        return elvPos;
     }
     public void updateTelemetry() {
         //to tune pid (remove when done or comment out)

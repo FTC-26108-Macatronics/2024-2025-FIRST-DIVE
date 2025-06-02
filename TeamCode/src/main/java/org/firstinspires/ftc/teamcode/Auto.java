@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.commands.auto.drive.DriveToSetpoint;
 import org.firstinspires.ftc.teamcode.commands.teleop.elevator.ChangeElevatorPosition;
 import org.firstinspires.ftc.teamcode.commands.teleop.elevator.MoveElevator;
+import org.firstinspires.ftc.teamcode.subsystems.ElevatorSubsystem;
 
 @Autonomous
 public class Auto extends OpMode {
@@ -23,7 +24,7 @@ public class Auto extends OpMode {
         Robot.commandScheduler.schedule(true, new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new DriveToSetpoint(5, 5),
-                    new ChangeElevatorPosition(Robot.m_elevatorSubsystem, Constants.ElevatorConstants.ELEVATOR_L1_HEIGHT))
+                    new ChangeElevatorPosition(Robot.m_elevatorSubsystem, ElevatorSubsystem.ElevatorPosition.L1))
                 )
         );
     }
