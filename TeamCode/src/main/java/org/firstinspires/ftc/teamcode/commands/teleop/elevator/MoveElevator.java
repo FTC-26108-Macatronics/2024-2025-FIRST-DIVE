@@ -6,8 +6,6 @@ import org.firstinspires.ftc.teamcode.subsystems.ElevatorSubsystem;
 public class MoveElevator extends CommandBase {
 
     private final ElevatorSubsystem m_elevatorSubsystem;
-    private boolean endCommand = false;
-
     public MoveElevator(ElevatorSubsystem m_elevatorSubsystem) {
         this.m_elevatorSubsystem = m_elevatorSubsystem;
         addRequirements(m_elevatorSubsystem);
@@ -30,7 +28,7 @@ public class MoveElevator extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return endCommand;
+        return false;
     }
 
 }

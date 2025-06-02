@@ -9,7 +9,7 @@ public class RotateClaw extends CommandBase {
 
     public RotateClaw(ClawRotationSubsystem m_clawRotationSubsystem) {
         this.m_clawRotationSubsystem = m_clawRotationSubsystem;
-        addRequirements();
+        addRequirements(m_clawRotationSubsystem);
 
     }
 

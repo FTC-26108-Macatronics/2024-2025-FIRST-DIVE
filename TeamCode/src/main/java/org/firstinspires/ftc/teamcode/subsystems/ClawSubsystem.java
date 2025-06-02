@@ -12,7 +12,6 @@ public class ClawSubsystem extends SubsystemBase {
 
     private final Servo clawServo;
     private final Telemetry dashboard;
-
     private double setpoint = 0;
 
     public ClawSubsystem(final OpMode opMode, Telemetry dashboard) {

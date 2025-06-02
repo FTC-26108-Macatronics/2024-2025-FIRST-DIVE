@@ -12,7 +12,7 @@ public class ChangeClawRotation extends CommandBase {
     public ChangeClawRotation(ClawRotationSubsystem m_clawRotationSubsystem, double angle) {
         this.m_clawRotationSubsystem = m_clawRotationSubsystem;
         this.angle = angle;
-        addRequirements(m_clawRotationSubsystem);
+        addRequirements();
 
     }
 
