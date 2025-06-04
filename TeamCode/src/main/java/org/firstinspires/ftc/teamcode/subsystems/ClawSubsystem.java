@@ -14,6 +14,7 @@ public class ClawSubsystem extends SubsystemBase {
     private final Telemetry dashboard;
     private double setpoint = 0;
 
+    private ClawPosition clawPos = ClawPosition.CLOSED;
     public ClawSubsystem(final OpMode opMode, Telemetry dashboard) {
         this.dashboard = dashboard;
         clawServo = opMode.hardwareMap.get(Servo.class, "claw_servo");
@@ -27,20 +28,26 @@ public class ClawSubsystem extends SubsystemBase {
     }
 
     public ClawPosition getClawEnumPosition() {
-        double currentPosition = getClawPosition();
+        return clawPos;
+    }
 
-        if (Math.abs(currentPosition - Constants.ClawConstants.SERVO_CLOSED) < Constants.ClawConstants.CLAW_ERROR_TOLERANCE * 2) {
-            return ClawPosition.CLOSED;
-        } else if (Math.abs(currentPosition - Constants.ClawConstants.SERVO_OPEN) < Constants.ClawConstants.CLAW_ERROR_TOLERANCE * 2) {
-            return ClawPosition.OPEN;
-        } else {
-            return ClawPosition.UNKNOWN;
+    public void setClawEnumPosition(ClawPosition position) {
+        clawPos = position;
+    }
+
+    public void setPosition(ClawPosition position) {
+        switch (position) {
+            case CLOSED:
+                setpoint = Constants.ClawConstants.SERVO_OPEN;
+                break;
+            case OPEN:
+                setpoint = Constants.ClawConstants.SERVO_CLOSED;
+                break;
+            default: setpoint = 0;
         }
+        setClawEnumPosition(position);
     }
 
-    public void setClawPosition(double position) {
-        setpoint = position;
-    }
     public double getClawPosition() {
         return clawServo.getPosition();
     }

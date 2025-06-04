@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
@@ -12,11 +14,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.teleop.arm.ChangeArmPosition;
 import org.firstinspires.ftc.teamcode.commands.teleop.arm.MoveArm;
+import org.firstinspires.ftc.teamcode.commands.teleop.claw.OpenClaw;
+import org.firstinspires.ftc.teamcode.commands.teleop.claw.PinchClaw;
 import org.firstinspires.ftc.teamcode.commands.teleop.claw.RotateClaw;
 import org.firstinspires.ftc.teamcode.commands.teleop.drive.DriveCommand;
-import org.firstinspires.ftc.teamcode.commands.teleop.elevator.ChangeElevatorPosition;
 import org.firstinspires.ftc.teamcode.commands.teleop.elevator.MoveElevator;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ClawRotationSubsystem;
@@ -36,7 +38,8 @@ public class Robot extends OpMode {
     public static CommandScheduler commandScheduler;
     public static GamepadEx m_driverController;
     public static GamepadEx m_operatorController;
-    private final Button DRIVER_LEFT_BUMPER;
+    private final Button DRIVER_BUMPER_LEFT;
+    private final Button DRIVER_BUMPER_RIGHT;
     private final Trigger DRIVER_LEFT_TRIGGER;
     private final Trigger DRIVER_RIGHT_TRIGGER;
     private final Button DRIVER_BUTTON_A;
@@ -61,7 +64,8 @@ public class Robot extends OpMode {
         m_driverController = new GamepadEx(gamepad1);
         m_operatorController = new GamepadEx(gamepad2);
 
-        DRIVER_LEFT_BUMPER = new GamepadButton(m_driverController, GamepadKeys.Button.LEFT_BUMPER);
+        DRIVER_BUMPER_LEFT = new GamepadButton(m_driverController, GamepadKeys.Button.LEFT_BUMPER);
+        DRIVER_BUMPER_RIGHT = new GamepadButton(m_driverController, GamepadKeys.Button.RIGHT_BUMPER);
 
         DRIVER_LEFT_TRIGGER = new Controller.ControllerTrigger(m_driverController, GamepadKeys.Trigger.LEFT_TRIGGER);
         DRIVER_RIGHT_TRIGGER = new Controller.ControllerTrigger(m_driverController, GamepadKeys.Trigger.RIGHT_TRIGGER);
@@ -75,8 +79,6 @@ public class Robot extends OpMode {
         DRIVER_DPAD_DOWN = new GamepadButton(m_driverController, GamepadKeys.Button.DPAD_DOWN);
         DRIVER_DPAD_LEFT = new GamepadButton(m_driverController, GamepadKeys.Button.DPAD_LEFT);
         DRIVER_DPAD_RIGHT = new GamepadButton(m_driverController, GamepadKeys.Button.DPAD_RIGHT);
-
-        configureBindings();
     }
 
     @Override
@@ -110,17 +112,23 @@ public class Robot extends OpMode {
         m_armSubsystem.setDefaultCommand(new MoveArm(m_armSubsystem));
         m_clawRotationSubsystem.setDefaultCommand(new RotateClaw(m_clawRotationSubsystem));
 
-        DRIVER_BUTTON_A.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, ElevatorSubsystem.ElevatorPosition.HOME));
-        DRIVER_BUTTON_B.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, ElevatorSubsystem.ElevatorPosition.L1));
-        DRIVER_BUTTON_X.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, ElevatorSubsystem.ElevatorPosition.L2));
-        DRIVER_BUTTON_Y.whenPressed(new ChangeElevatorPosition(m_elevatorSubsystem, ElevatorSubsystem.ElevatorPosition.L3));
+        DRIVER_BUTTON_A.whenPressed(new InstantCommand(() -> m_elevatorSubsystem.setPosition(ElevatorSubsystem.ElevatorPosition.HOME)));
+        DRIVER_BUTTON_B.whenPressed(new InstantCommand(() -> m_elevatorSubsystem.setPosition(ElevatorSubsystem.ElevatorPosition.L1)));
+        DRIVER_BUTTON_X.whenPressed(new InstantCommand(() -> m_elevatorSubsystem.setPosition(ElevatorSubsystem.ElevatorPosition.L2)));
+        DRIVER_BUTTON_Y.whenPressed(new InstantCommand(() -> m_elevatorSubsystem.setPosition(ElevatorSubsystem.ElevatorPosition.L3)));
 
-        DRIVER_DPAD_DOWN.whenPressed(new ChangeArmPosition(m_armSubsystem, ArmSubsystem.ArmPosition.HOME));
-        DRIVER_DPAD_LEFT.whenPressed(new ChangeArmPosition(m_armSubsystem, ArmSubsystem.ArmPosition.L1));
-        DRIVER_DPAD_RIGHT.whenPressed(new ChangeArmPosition(m_armSubsystem, ArmSubsystem.ArmPosition.L2));
-        DRIVER_DPAD_UP.whenPressed(new ChangeArmPosition(m_armSubsystem, ArmSubsystem.ArmPosition.L3));
+        DRIVER_DPAD_DOWN.whenPressed(new InstantCommand(() -> m_armSubsystem.setPosition(ArmSubsystem.ArmPosition.HOME)));
+        DRIVER_DPAD_LEFT.whenPressed(new InstantCommand(() -> m_armSubsystem.setPosition(ArmSubsystem.ArmPosition.L1)));
+        DRIVER_DPAD_RIGHT.whenPressed(new InstantCommand(() -> m_armSubsystem.setPosition(ArmSubsystem.ArmPosition.L2)));
+        DRIVER_DPAD_UP.whenPressed(new InstantCommand(() -> m_armSubsystem.setPosition(ArmSubsystem.ArmPosition.L3)));
 
-//        DRIVER_BUTTON_A.whileHeld(new MoveClaw(m_clawSubsystem));
+        DRIVER_BUMPER_LEFT.whenPressed(new SequentialCommandGroup(
+                new InstantCommand(() -> m_clawRotationSubsystem.setRotation(ClawRotationSubsystem.ClawRotation.PICKUP)),
+                new PinchClaw(m_clawSubsystem)));
+
+        DRIVER_BUMPER_RIGHT.whenPressed(new SequentialCommandGroup(
+                new InstantCommand(() -> m_clawRotationSubsystem.setRotation(ClawRotationSubsystem.ClawRotation.DROP)),
+                new OpenClaw(m_clawSubsystem)));
     }
 
     public void deconfigureBindings() {

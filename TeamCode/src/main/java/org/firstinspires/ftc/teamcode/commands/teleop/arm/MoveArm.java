@@ -5,12 +5,9 @@ import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 public class MoveArm extends CommandBase {
 
     private final ArmSubsystem m_armSubsystem;
-    private boolean endCommand = false;
-
     public MoveArm(ArmSubsystem m_armSubsystem) {
         this.m_armSubsystem = m_armSubsystem;
         addRequirements(m_armSubsystem);
-
     }
 
     @Override
@@ -30,7 +27,7 @@ public class MoveArm extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return endCommand;
+        return false;
     }
 
 }

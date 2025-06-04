@@ -15,6 +15,7 @@ public class ClawRotationSubsystem extends SubsystemBase {
     private final Telemetry dashboard;
     private final ProfiledPIDController clawRotationController;
     private double setpoint = 0;
+    private ClawRotation clawRotation;
 
     public ClawRotationSubsystem(final OpMode opMode, Telemetry dashboard) {
         this.dashboard = dashboard;
@@ -30,6 +31,7 @@ public class ClawRotationSubsystem extends SubsystemBase {
     }
 
     public enum ClawRotation {
+        HOME,
         DROP,
         PICKUP,
         CARRY,
@@ -37,37 +39,39 @@ public class ClawRotationSubsystem extends SubsystemBase {
     }
 
     public ClawRotation getClawRotationEnumPosition() {
-        double currentPosition = getClawRotationAngle();
-
-        if (Math.abs(currentPosition - Constants.ClawConstants.CLAW_DROP_ROTATION) < Constants.ClawConstants.CLAW_ERROR_TOLERANCE * 2) {
-            return ClawRotation.DROP;
-        } else if (Math.abs(currentPosition - Constants.ClawConstants.CLAW_PICKUP_ROTATION) < Constants.ClawConstants.CLAW_ERROR_TOLERANCE * 2) {
-            return ClawRotation.PICKUP;
-        } else if (Math.abs(currentPosition - Constants.ClawConstants.CLAW_CARRY_ROTATION) < Constants.ClawConstants.CLAW_ERROR_TOLERANCE * 2) {
-            return ClawRotation.CARRY;
-        } else {
-            return ClawRotation.UNKNOWN;
-        }
+        return clawRotation;
     }
+
+    public void setClawEnumRotation(ClawRotation rotation) {
+        clawRotation = rotation;
+    }
+
+    public void setRotation(ClawRotation rotation) {
+        switch (rotation) {
+            case HOME:
+                setpoint = 0;
+                break;
+            case DROP:
+                setpoint = Constants.ClawConstants.CLAW_DROP_ROTATION;
+                break;
+            case PICKUP:
+                setpoint = Constants.ClawConstants.CLAW_PICKUP_ROTATION;
+                break;
+            case CARRY:
+                setpoint = Constants.ClawConstants.CLAW_CARRY_ROTATION;
+                break;
+            default: setpoint = 0;
+        }
+        setClawEnumRotation(rotation);
+        clawRotationController.setGoal(setpoint);
+    }
+
     public int getClawRotationAngle() {
         return clawMotor.getCurrentPosition() * 360;
     }
 
     public void setPower(double pwr) {
         clawMotor.setPower(pwr);
-    }
-
-    public void setClawRotationTarget(double angle) {
-        if (angle >= Constants.ClawConstants.MAX_CLAW_ROTATION) {
-            setpoint = Constants.ClawConstants.MAX_CLAW_ROTATION;
-        }
-        else if (angle <= Constants.ClawConstants.MIN_CLAW_ROTATION) {
-            setpoint = Constants.ClawConstants.MIN_CLAW_ROTATION;
-        }
-        else {
-            setpoint = angle;
-        }
-        clawRotationController.setGoal(setpoint);
     }
 
     public void goToSetpointRotation() {

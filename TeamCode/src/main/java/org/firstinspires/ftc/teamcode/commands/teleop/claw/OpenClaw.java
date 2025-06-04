@@ -14,7 +14,7 @@ public class OpenClaw extends CommandBase {
 
     @Override
     public void initialize() {
-        m_clawSubsystem.setClawPosition(Constants.ClawConstants.SERVO_OPEN);
+        m_clawSubsystem.setPosition(ClawSubsystem.ClawPosition.OPEN);
     }
 
     @Override

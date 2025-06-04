@@ -88,7 +88,6 @@ public class ArmSubsystem extends SubsystemBase {
         return armPos;
     }
 
-
     public void goToSetpoint() {
         setPower(armController.calculate(getArmPositionDegrees()));
     }

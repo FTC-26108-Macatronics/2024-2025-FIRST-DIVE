@@ -9,7 +9,6 @@ public class MoveElevator extends CommandBase {
     public MoveElevator(ElevatorSubsystem m_elevatorSubsystem) {
         this.m_elevatorSubsystem = m_elevatorSubsystem;
         addRequirements(m_elevatorSubsystem);
-
     }
 
     @Override

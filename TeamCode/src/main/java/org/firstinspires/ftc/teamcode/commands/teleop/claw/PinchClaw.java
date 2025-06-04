@@ -14,7 +14,7 @@ public class PinchClaw extends CommandBase {
 
     @Override
     public void initialize() {
-        m_clawSubsystem.setClawPosition(Constants.ClawConstants.SERVO_CLOSED);
+        m_clawSubsystem.setPosition(ClawSubsystem.ClawPosition.CLOSED);
     }
 
     @Override

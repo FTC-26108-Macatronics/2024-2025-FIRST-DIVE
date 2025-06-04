@@ -63,13 +63,8 @@ public class DriveSubsystem extends SubsystemBase {
         transverseDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         driveController = new PIDController(Constants.DriveConstants.K_P_DRIVE, Constants.DriveConstants.K_I_DRIVE, Constants.DriveConstants.K_D_DRIVE);
-        driveController.clearTotalError();
-
         turnController = new PIDController(Constants.DriveConstants.K_P_TURN, Constants.DriveConstants.K_I_TURN, Constants.DriveConstants.K_D_TURN);
-        turnController.clearTotalError();
-
         strafeController = new PIDController(Constants.DriveConstants.K_P_STRAFE, Constants.DriveConstants.K_I_STRAFE, Constants.DriveConstants.K_D_STRAFE);
-        strafeController.clearTotalError();
     }
     public void drive(double drive, double turn, double strafe) {
         double leftPwr = drive + turn;
