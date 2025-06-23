@@ -20,7 +20,10 @@ public class Constants {
         public static double K_P_STRAFE = 0;
         public static double K_I_STRAFE = 0;
         public static double K_D_STRAFE = 0;
+        public static double MAX_DRIVE_VELOCITY = 0.9;
+        public static double MAX_DRIVE_ACCELERATION = 0.5;
 
+        public static TrapezoidProfile.Constraints DRIVE_CONSTRAINTS = new TrapezoidProfile.Constraints(MAX_DRIVE_VELOCITY, MAX_DRIVE_ACCELERATION);
         public static final double WHEEL_DIAMETER = 5.2; // in mm
         public static final double COUNTS_PER_MOTOR_REV = 28.0;
         public static final double DRIVE_GEAR_REDUCTION = 30.24;
